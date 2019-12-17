@@ -1,5 +1,5 @@
 {
-  "description": "国妙堂",
+  "description": "A WePY project",
   "setting": {
     "urlCheck": true,
     "es6": false,
@@ -7,7 +7,7 @@
     "minified": false
   },
   "compileType": "miniprogram",
-  "appid": "touristappid",
-  "projectname": "gmtmini",
+  "appid": "wx72f6770390f3054a",
+  "projectname": "mini",
   "miniprogramRoot": "./dist"
 }
