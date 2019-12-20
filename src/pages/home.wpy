@@ -22,7 +22,7 @@
 <script>
   import wepy from 'wepy'
   import ShopGridList from '../components/goodsList'
-  export default class Index extends wepy.page {
+  export default class Home extends wepy.page {
     config = {
       navigationBarTitleText: '国妙堂'
     }

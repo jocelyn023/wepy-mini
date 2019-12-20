@@ -1,0 +1,208 @@
+<!--商品详情页-->
+<template>
+  <view class="container">
+    <!-- banner -->
+    <swiper class="swiper" indicator-dots="{{indicatorDots}}" indicator-active-color="{{indicatorActiveColor}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" circular="true">
+      <block wx:for="{{banners}}" wx:key="key">
+        <swiper-item>
+          <image src="{{item.thumLogo}}" class="slide-image" />
+        </swiper-item>
+      </block>
+    </swiper>
+
+    <!-- 价格 -->
+    <view class="bugInfo flex">
+      <view class="price theme">￥<span>{{goodsInfo.price}}</span><span class="lineThrough c_gray_dc">￥{{goodsInfo.marketPrice}}</span></view>
+      <view class="c000 fz24">已售{{goodsInfo.saleCount}}件</view>
+    </view>
+
+    <!-- 商品名字 -->
+    <view class="goods-name c000 fz32">{{goodsInfo.name}}</view>
+
+    <!-- 商品详情 -->
+    <view class="goods-details">
+      <view class="detail-title c000 fz32">商品详情</view>
+      <image src="{{goodsInfo.thumLogo}}" mode="widthFix" class="goods-detail-img" />
+    </view>
+
+    <!--底部工具栏-->
+    <view class="fixBottom flex">
+      <view class="counter-box flex">
+        <button @tap="reduceFn">
+          <i class="gmtfont icon-reduce-full"></i>
+        </button>
+        <span class="counter">{{count}}</span>
+        <button @tap="addFn">
+          <i class="gmtfont icon-add-full"></i>
+        </button>
+      </view>
+      <navigator class="buy" url="/pages/order_goods">立即购买</navigator>
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class GoodsDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '礼品卡'
+    }
+    data = {
+      goods_id: null,
+      count: 0,
+      indicatorDots: true,
+      indicatorActiveColor: '#fff',
+      autoplay: true,
+      interval: 3000,
+      duration: 1000,
+      goodsInfo: {
+        id: 1,
+        thumLogo: '../images/bc_qdyl.png',
+        name: '哈哈哈哈1',
+        price: '120.00',
+        marketPrice: '123',
+        saleCount: 1
+      },
+      banners: [{
+        id: 1,
+        thumLogo: '../images/bc_qdyl.png',
+        name: '哈哈哈哈1',
+        price: '120.00',
+        marketPrice: '123',
+        saleCount: 1
+      }, {
+        id: 2,
+        thumLogo: '../images/bc_qdyl.png',
+        name: '哈哈哈哈1',
+        price: '120.00',
+        marketPrice: '123',
+        saleCount: 1
+      }],
+      is_show_alert: true
+    }
+
+    async getAdList() {
+      // const json = await api.getAdList({
+      //   query: {}
+      // })
+      // if (json.data.code == 0) {
+      //   this.adList = json.data.list
+      //   this.$apply()
+      // }
+    }
+    methods = {
+      tap () {
+        console.log('do noting from ' + this.$name)
+      },
+      reduceFn() {
+        if (this.count <= 0) {
+          this.count = 0
+        } else {
+          this.count = this.count - 1
+        }
+      },
+      addFn() {
+        this.count ++
+      }
+    }
+    async onLoad(options) {
+      this.goods_id = options.id
+      this.getAdList()
+    }
+  }
+</script>
+
+<style lang="less">
+  .container {
+    padding-bottom: 100rpx;
+    min-height: 100vh;
+    background: #fff;
+  }
+  .swiper {
+    height: 554rpx;
+    .slide-image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .bugInfo {
+    padding: 0 44rpx;
+    width: 100%;
+    height: 70rpx;
+    line-height: 70rpx;
+    box-sizing: border-box;
+    .price {
+      font-size: 18px;
+      .lineThrough {
+        margin-left: 10rpx;
+        font-size: 12px;
+        text-decoration: line-through;
+      }
+    }
+  }
+
+  .goods-name {
+    padding: 0 44rpx;
+    width: 100%;
+    height: 52rpx;
+    line-height: 52rpx;
+    box-sizing: border-box;
+  }
+
+  .goods-details {
+    padding: 0 44rpx;
+    width: 100%;
+    box-sizing: border-box;
+    .detail-title {
+      height: 84rpx;
+      line-height: 84rpx;
+    }
+
+    .goods-detail-img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .fixBottom {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 88rpx;
+    background: #fff;
+    box-shadow: 0 0 20rpx rgba(0, 0, 0, 0.4);
+    .counter-box {
+      padding: 0 50rpx;
+      width: 50%;
+      height: 100%;
+      box-sizing: border-box;
+      button {
+        background: #fff;
+        flex-grow: 1;
+        border-radius: 0;
+      }
+
+      button::after {
+        border: none;
+      }
+
+      .counter {
+        width: 100rpx;
+        height: 100%;
+        line-height: 88rpx;
+        text-align: center;
+      }
+    }
+    .buy {
+      width: 50%;
+      height: 100%;
+      color: #fff;
+      text-align: center;
+      line-height: 88rpx;
+      border-radius: 0;
+      background: #000;
+    }
+  }
+</style>

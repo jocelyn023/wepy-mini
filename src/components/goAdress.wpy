@@ -1,0 +1,47 @@
+<!-- 订单页 顶部跳转条 -->
+<template>
+  <view>
+    <block wx:if="{{showDefault}}">
+      <navigator class="top cfff flex theme_bg" url="/pages/goods_detail">
+        <view><i class="gmtfont icon-pos"></i>选择收货地址</view>
+        <i class="gmtfont icon-right"></i>
+      </navigator>
+    </block>
+    <block wx:else>
+      <navigator class="top c333 flex bg_gray_d" url="/pages/goods_detail">
+        <view><i class="gmtfont icon-pos"></i>{{title}}</view>
+        <i class="gmtfont icon-right"></i>
+      </navigator>
+    </block>
+  </view>
+
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class GoAdress extends wepy.component {
+    props = {
+      title: {
+        type: String,
+        default: '选择收货地址'
+      },
+      showDefault: {
+        type: Boolean,
+        default: false
+      }
+    }
+
+    async onLoad() {}
+  }
+</script>
+
+<style lang="less">
+  .top {
+    padding: 0 40rpx;
+    width: 100%;
+    height: 92rpx;
+    line-height: 92rpx;
+    box-sizing: border-box;
+    font-size: 12px;
+  }
+
+</style>
