@@ -32,15 +32,10 @@ export default class extends wepy.app {
         iconPath: 'images/icon_home.png',
         selectedIconPath: 'images/icon_home_active.png'
       }, {
-        pagePath: 'pages/order_goods',
+        pagePath: 'pages/home',
         text: '分类',
         iconPath: 'images/icon_card.png',
         selectedIconPath: 'images/icon_card_active.png'
-      }, {
-        pagePath: 'pages/order_goods',
-        text: '分类',
-        iconPath: 'images/icon_info.png',
-        selectedIconPath: 'images/icon_info_active.png'
       }]
     }
   }
@@ -56,7 +51,10 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
-    //this.testAsync()
+    // wx.reLaunch({
+    //   url: '/pages/authorize'
+    // })
+    // this.testAsync()
   }
 
   // sleep (s) {
