@@ -61,7 +61,7 @@ export default class extends wepy.app {
         "iconPath": "images/icon_home.png",
         "selectedIconPath": "images/icon_home_active.png"
       }, {
-        "pagePath": "pages/classify",
+        "pagePath": "pages/exchange_goods",
         "text": "提货",
         "iconPath": "images/icon_card.png",
         "selectedIconPath": "images/icon_card_active.png"

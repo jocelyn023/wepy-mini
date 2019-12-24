@@ -1,14 +1,34 @@
-<!--换货专区-->
+<!--提货-->
 <template>
-  <!--矩阵商品列表模块-->
-  <shopGridList :purchasetype.sync="purchasetype" :special.sync="special" :list.sync="list"></shopGridList>
-  <bottomLoadMore :show.sync="showLoading" message="正在加载"></bottomLoadMore>
-  <!--暂无数据显示-->
-  <placeholder :show.sync="is_empty" message="暂无发现数据"></placeholder>
+  <view class="logo">
+    <image src="../images/logo_chang.png"></image>
+  </view>
+  <view class="form-wrap">
+    <view class="item flex">
+      <view class="label">卡号</view>
+      <view class="nr">
+        <input class="weui-input" auto-focus placeholder=""/>
+      </view>
+    </view>
+    <view class="item flex">
+      <view class="label">密码</view>
+      <view class="nr">
+        <input class="weui-input" auto-focus placeholder=""/>
+      </view>
+    </view>
+    <view class="item flex">
+      <view class="label">验证码</view>
+      <view class="nr">
+        <input class="weui-input" auto-focus placeholder=""/>
+      </view>
+      <view class="reg">
+
+      </view>
+    </view>
+  </view>
 </template>
 <script>
 import wepy from 'wepy';
-import ShopGridList from '@/components/shop_grid_list'
 import {
   SYSTEM_INFO,
   USER_SPECICAL_INFO
@@ -20,10 +40,9 @@ import Placeholder from "@/components/common/placeholder"
 
 export default class exchangeGoods extends wepy.page {
   config = {
-    navigationBarTitleText: '换货专区',
+    navigationBarTitleText: '提货',
   }
   components = {
-    shopGridList: ShopGridList,
     bottomLoadMore: BottomLoadMore,
     placeholder: Placeholder
   }
@@ -70,10 +89,10 @@ export default class exchangeGoods extends wepy.page {
 
   onLoad() {
     this.list = [];
-    this.getMyOrderGoodsList();
+    console.log(1)
+    // this.getMyOrderGoodsList();
     /*that.list = bb.result.products;
     console.log(bb.result.products)*/
-
   }
   computed = {
 
@@ -89,3 +108,52 @@ export default class exchangeGoods extends wepy.page {
 }
 
 </script>
+
+<style lang="less">
+ page {
+   background: #030303;
+ }
+  .logo {
+    padding: 136rpx 264rpx 146rpx;
+    height: 370rpx;
+    box-sizing: border-box;
+    image {
+      height: 100%
+    }
+  }
+
+  .form-wrap {
+    margin: 0 auto;
+    width: 673rpx;
+    background: #fff;
+    border-radius: 6rpx;
+    .item {
+      width: 100%;
+      height: 81rpx;
+      line-height: 80rpx;
+      border-bottom: 1rpx solid #0f0f0f;
+      .label {
+        color: #858585;
+        width: 140rpx;
+        height: 100%;
+        text-align: center;
+      }
+
+      .nr {
+        flex-grow: 1;
+        height: 100%;
+      }
+
+      .reg {
+        width: 200rpx;
+        height: 100%;
+        background: #e1e1e1;
+      }
+
+      input {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+</style>
