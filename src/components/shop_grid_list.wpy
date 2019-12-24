@@ -1,20 +1,23 @@
 <!--商品列表模块-->
 <template>
-  <scroll-view scroll-y="true" class="swiper-item-box">
+  <scroll-view scroll-y="true" class="swiper-item-box" wx:if="{{list.length>0}}">
     <view class="shop_item">
-      <navigator class="list" wx:for="{{list}}" wx:key="item" url="/pages/goods_detail?id={{item.id}}&purchasetype={{purchasetype}}&special={{special}}">
-        <view class="image_box">
-          <image src="{{item.thumLogo}}"></image>
-        </view>
-        <view class="goods">
-          <view class="product_name" wx:if="{{showTitle}}">{{item.name}}</view>
-          <view class="product_info">
-            <view class="price">￥{{item.price}}</view>
-            <view class="cost_price">￥{{item.marketPrice}}</view>
-            <view class="sale_num">销量{{item.saleCount}}件</view>
+      <view class="list" wx:for="{{list}}" wx:key="item">
+        <navigator class="list_item" url="/pages/goods_detail?id={{item.id}}&purchasetype={{purchasetype}}&special={{special}}">
+          <view class="image_box">
+            <image src="{{item.thumLogo}}"></image>
           </view>
-        </view>
-      </navigator>
+          <view class="goods">
+            <view class="product_name" wx:if="{{showTitle}}">{{item.name}}</view>
+            <view class="flex">
+              <view class="price theme">￥{{item.price}}</view>
+              <view class="">
+                <i class="gmtfont icon-buycar"></i>
+              </view>
+            </view>
+          </view>
+        </navigator>
+      </view>
     </view>
   </scroll-view>
 </template>
@@ -50,66 +53,53 @@ export default class ShopGridList extends wepy.component {
 
 </script>
 <style lang="less">
-.shop_item {
-  padding: 0rpx 15rpx;
-  background: #f7f7f7;
-  display: flex;
-  flex-wrap: wrap;
-  padding-bottom: 30rpx;
-}
+  .shop_item {
+    padding: 28rpx 12rpx 0;
+    background: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 30rpx;
+    box-sizing: border-box;
+  }
 
-.list:nth-child(odd) {
-  margin-right: 10rpx;
-}
-
-.list {
-  background: #fff;
-  width: 355rpx;
-  margin-top: 15rpx;
-  .image_box {
-    image {
+  .list {
+    width: 50%;
+    padding: 0 6rpx 20rpx;
+    box-sizing: border-box;
+    .list_item {
       width: 100%;
-      height: 345rpx;
+      height: 100%;
+      .image_box {
+        image {
+          height: 322rpx;
+          border-radius: 16rpx 16rpx 0 0;
+        }
+      }
+
+      .goods {
+        padding: 0 20rpx 30rpx;
+        width: 100%;
+        border: 1rpx solid #818080;
+        border-radius: 0 0 16rpx 16rpx;
+        box-sizing: border-box;
+        .product_name {
+          color: #000;
+          font-size: 28rpx;
+          height: 60rpx;
+          line-height: 60rpx;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          word-break: break-all;
+        }
+
+        .price {
+          font-size: 24rpx;
+          font-weight: 600;
+        }
+      }
     }
   }
-  .product_name {
-    color: #1a1a1a;
-    font-size: 28rpx;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    word-break: break-all;
-  }
-  .price {
-    color: #de0000;
-    font-size: 35rpx;
-    font-weight: 600;
-  }
-  .cost_price {
-    color: #666666;
-    font-size: 24rpx;
-    text-decoration: line-through;
-    font-weight: 600;
-  }
-  .sale_num {
-    color: #666666;
-    font-size: 22rpx;
-  }
-  .goods {
-    padding: 15rpx 12rpx;
-  }
-  .product_info {
-    padding-top: 20rpx;
-    display: flex;
-    align-items: flex-end;
-  }
-  .cost_price {
-    padding-left: 20rpx;
-  }
-  .sale_num {
-    padding-left: 20rpx;
-  }
-}
 
 </style>
