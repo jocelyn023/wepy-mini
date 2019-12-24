@@ -13,24 +13,24 @@ export default class Tips {
     setTimeout(() => {
       wx.showToast({
         title: title,
-        icon: 'success',
+        icon: "success",
         mask: true,
         duration: duration
-      })
-    }, 300)
+      });
+    }, 300);
     if (duration > 0) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve()
-        }, duration)
-      })
+          resolve();
+        }, duration);
+      });
     }
   }
 
   /**
    * 弹出确认窗口
    */
-  static confirm(text, payload = {}, title = '提示') {
+  static confirm(text, payload = {}, title = "提示") {
     return new Promise((resolve, reject) => {
       wx.showModal({
         title: title,
@@ -38,33 +38,33 @@ export default class Tips {
         showCancel: true,
         success: res => {
           if (res.confirm) {
-            resolve(payload)
+            resolve(payload);
           } else if (res.cancel) {
-            reject(payload)
+            reject(payload);
           }
         },
         fail: res => {
-          reject(payload)
+          reject(payload);
         }
-      })
-    })
+      });
+    });
   }
 
-  static toast(title, onHide, icon = 'success') {
+  static toast(title, onHide, icon = "success") {
     setTimeout(() => {
       wx.showToast({
         title: title,
         icon: icon,
         mask: true,
         duration: 500
-      })
-    }, 300)
+      });
+    }, 300);
 
     // 隐藏结束回调
     if (onHide) {
       setTimeout(() => {
-        onHide()
-      }, 500)
+        onHide();
+      }, 500);
     }
   }
 
@@ -74,10 +74,10 @@ export default class Tips {
   static alert(title) {
     wx.showToast({
       title: title,
-      image: '../images/alert.png',
+      image: "../images/alert.png",
       mask: true,
       duration: 1500
-    })
+    });
   }
 
   /**
@@ -87,30 +87,30 @@ export default class Tips {
   static error(title, onHide) {
     wx.showToast({
       title: title,
-      image: '../images/error.png',
+      image: "../images/error.png",
       mask: true,
       duration: 500
-    })
+    });
     // 隐藏结束回调
     if (onHide) {
       setTimeout(() => {
-        onHide()
-      }, 500)
+        onHide();
+      }, 500);
     }
   }
 
   /**
    * 弹出加载提示
    */
-  static loading(title = '加载中') {
+  static loading(title = "加载中") {
     if (Tips.isLoading) {
-      return
+      return;
     }
-    Tips.isLoading = true
+    Tips.isLoading = true;
     wx.showLoading({
       title: title,
       mask: true
-    })
+    });
   }
 
   /**
@@ -118,8 +118,8 @@ export default class Tips {
    */
   static loaded() {
     if (Tips.isLoading) {
-      Tips.isLoading = false
-      wx.hideLoading()
+      Tips.isLoading = false;
+      wx.hideLoading();
     }
   }
 
@@ -129,7 +129,7 @@ export default class Tips {
       path: url,
       desc: desc,
       success: function(res) {
-        Tips.toast('分享成功')
+        Tips.toast("分享成功");
       }
     };
   }
@@ -138,4 +138,4 @@ export default class Tips {
 /**
  * 静态变量，是否加载中
  */
-Tips.isLoading = false
+Tips.isLoading = false;
