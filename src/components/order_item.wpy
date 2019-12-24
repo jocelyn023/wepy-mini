@@ -22,10 +22,8 @@
           <text class="defult" wx:if="{{item.status==0}}">
             <view class="order_state">待支付</view>
           </text>
-          <view class="order_state" wx:if="{{item.status==0}}">待付款</view>
-          <view class="order_state" wx:if="{{item.status==2 || item.status==1}}">待收货</view>
-          <view class="order_state" wx:if="{{item.status==4}}">已完成</view>
-          <view class="order_state" wx:if="{{item.status==3}}">待评论</view>
+          <view class="order_state" wx:if="{{item.status==1}}">已提货</view>
+          <view class="order_state" wx:if="{{item.status==2}}">未使用</view>
         </view>
     </view>
 
@@ -71,10 +69,32 @@ export default class orderItem extends wepy.component {
 
   props = {
     orderList: {
-      default: [],
+      default: [{
+        orderNo: '1111111111111',
+        createTime: '2019-08-20',
+        status: 1,
+        auditStatus: 5
+      },{
+        orderNo: '1111111111111',
+        createTime: '2019-08-20',
+        status: 1,
+        auditStatus: 5
+      }],
       flag:"",
       orderNo:"",
-      list:[]
+      list:[{
+        orderNo: '1111111111111',
+        createTime: '2019-08-20',
+        status: 1,
+        auditStatus: 5,
+        goodsThumLogo: '../images/bg_order.png',
+        goodsName: '11111',
+        goodsSkuVals: '111',
+        price: 111,
+        num: 111,
+        refundStatus: 1,
+        id: '000'
+      }]
     }
   }
 
@@ -209,7 +229,8 @@ export default class orderItem extends wepy.component {
     border-bottom: 1px solid #efefef
   }
   .list {
-    background: #fff;
+    background: url("../images/bg_order.png") no-repeat center;
+    background-size: 100%;
     padding: 30rpx;
     margin-top: 15rpx;
   }

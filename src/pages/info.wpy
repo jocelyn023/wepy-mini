@@ -7,7 +7,8 @@
       </view>
     </view>
     <view class="info_block">
-      <navigator class="item" url="/pages/register" wx:if="{{bShowBind}}">
+      <button class="item" wx:if="{{bShowBind}}" open-type="getPhoneNumber">
+<!--      <navigator class="item" url="/pages/register" wx:if="{{bShowBind}}">-->
         <view>
           <view class="item_content">
             <image class="item_img" src="../images/icon_my_01.png"></image>
@@ -16,58 +17,29 @@
           <view class="tip">绑定手机号可更好的让我们服务好您！</view>
         </view>
         <view class="arrow">&gt;</view>
-      </navigator>
+      </button>
+<!--      </navigator>-->
       <navigator class="item" url="/pages/order">
         <view class="item_content">
           <image class="item_img" src="../images/icon_my_02.png"></image>
-          <view class="text">全部订单</view>
+          <view class="text">订单</view>
         </view>
         <view class="arrow">&gt;</view>
       </navigator>
-      <navigator class="item" url="/pages/reorder">
-        <view class="item_content">
-          <image class="item_img" src="../images/icon_my_02.png"></image>
-          <view class="text">补货订单</view>
-        </view>
-        <view class="arrow">&gt;</view>
-      </navigator>
-      <navigator class="item" url="/pages/points">
-        <view class="item_content">
-          <image class="item_img" src="../images/icon_my_03.png"></image>
-          <view class="text">我的积分</view>
-        </view>
-        <view class="arrow">&gt;</view>
-      </navigator>
-      <navigator class="item" url="/pages/collection?type=0">
-        <view class="item_content">
-          <image class="item_img" src="../images/icon_my_04.png"></image>
-          <view class="text">我的足迹</view>
-        </view>
-        <view class="arrow">&gt;</view>
-      </navigator>
-      <navigator class="item" url="/pages/collection?type=1">
-        <view class="item_content">
-          <image class="item_img" src="../images/icon_my_05.png"></image>
-          <view class="text">我的收藏</view>
-        </view>
-        <view class="arrow">&gt;</view>
-      </navigator>
-    </view>
-    <view class="info_block">
-      <navigator class="item" url="/pages/messages">
-        <view class="item_content">
-          <image class="item_img" src="../images/icon_my_06.png"></image>
-          <view class="text">我的消息</view>
-        </view>
-        <view class="arrow">&gt;</view>
-      </navigator>
-      <navigator class="item" url="/pages/setting">
+      <navigator class="item" url="/pages/address">
         <view class="item_content">
           <image class="item_img" src="../images/icon_my_07.png"></image>
-          <view class="text">设置</view>
+          <view class="text">地址</view>
         </view>
         <view class="arrow">&gt;</view>
       </navigator>
+      <button class="item" open-type="contact">
+        <view class="item_content">
+          <image class="item_img" src="../images/icon_my_07.png"></image>
+          <view class="text">客服</view>
+        </view>
+        <view class="arrow">&gt;</view>
+      </button>
     </view>
   </view>
 </template>
@@ -79,7 +51,7 @@ import {
 } from '@/utils/constant';
 export default class Index extends wepy.page {
   config = {
-    navigationBarTitleText: '我',
+    navigationBarTitleText: '我的',
   }
   components = {
 
@@ -88,7 +60,7 @@ export default class Index extends wepy.page {
   data = {
     avatarUrl: "",
     nickName: "",
-    bShowBind:false
+    bShowBind:true
   }
   async getUserInfo(phone,code) {
     let that = this;
@@ -137,8 +109,8 @@ export default class Index extends wepy.page {
 </script>
 <style lang="less">
 .header {
-  background: #ff6a3c;
-  height: 260rpx;
+  background: #050505;
+  height: 370rpx;
   width: 100%;
 }
 
@@ -146,22 +118,23 @@ export default class Index extends wepy.page {
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  padding-top: 48rpx;
+  padding-top: 64rpx;
 }
 
 .avatarUrl {
-  width: 122rpx;
-  height: 122rpx;
-  border-radius: 1000px;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
 }
 
 .nickName {
-  font-size: 30rpx;
-  padding-top: 15rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  font-size: 28rpx;
 }
 
 .info_block {
-  margin-top: 10rpx;
+  font-size: 28rpx;
   .item {
     border-top: 1rpx solid #dbdbdb;
     background: #fff;
@@ -194,6 +167,19 @@ export default class Index extends wepy.page {
     font-size: 24rpx;
     margin-top: 20rpx;
     margin-left: 60rpx;
+  }
+  .text {
+    font-size: 28rpx;
+    color: #000
+  }
+  button {
+    line-height: normal;
+    border-radius: 0;
+    font-size: 28rpx;
+  }
+  button: after {
+    border: none;
+    background: transparent;
   }
 }
 

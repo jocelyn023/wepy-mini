@@ -81,6 +81,7 @@ export default class Address extends wepy.page {
     this.getUserAddress();
     this.type = (option.type==undefined?"":option.type);
     this.$invoke("addressList","setOrgType", this.type);
+    console.log(this.$invoke("addressList","setOrgType", this.type))
   }
 
   onShow(){
