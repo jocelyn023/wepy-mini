@@ -1,5 +1,5 @@
 <template>
-  <view style="height:{{winHeight}}rpx; overflow:hidden">
+  <view style="height: {{winHeight}}rpx; overflow:hidden">
     <import src="../plugins/wxParse/wxParse.wxml" />
     <!--index.wxml-->
     <swiper indicator-dots="true" autoplay="true" interval="5000" duration="500" indicator-active-color="#ffc452" indicator-color="#efefef" class="swiper">
