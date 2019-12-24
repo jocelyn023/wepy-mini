@@ -115,7 +115,7 @@ export default class AddressList extends wepy.component {
   }
 
   onLoad() {
-
+    console.log(this.addressList)
   }
 }
 
