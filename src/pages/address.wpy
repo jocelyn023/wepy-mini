@@ -27,7 +27,6 @@ export default class Address extends wepy.page {
   data = {
     addressList: [],
     receiverInfo:{},
-
     //显示当前组件 0 列表 1新增 2编辑
     currentPage: 0,
     type: "" //哪个页面跳转过来的
@@ -45,6 +44,7 @@ export default class Address extends wepy.page {
 
     if (json.data.code == 0) {
       this.addressList=json.data.list;
+      console.log(this.addressList)
       this.$invoke("addressList","refreshList", this.addressList);
     } else {
       tip.error(json.data.msg)
