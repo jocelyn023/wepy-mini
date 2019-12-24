@@ -21,10 +21,12 @@
       <view class="nr">
         <input class="weui-input" auto-focus placeholder=""/>
       </view>
-      <view class="reg">
-
-      </view>
+      <view class="reg"></view>
     </view>
+  </view>
+
+  <view class="btn_box">
+    <button class="button type_theme" formType="submit">立 即 提 货</button>
   </view>
 </template>
 <script>
@@ -123,10 +125,11 @@ export default class exchangeGoods extends wepy.page {
   }
 
   .form-wrap {
-    margin: 0 auto;
+    margin: 0 auto 150rpx;
     width: 673rpx;
     background: #fff;
     border-radius: 6rpx;
+    overflow: hidden;
     .item {
       width: 100%;
       height: 81rpx;
@@ -155,5 +158,9 @@ export default class exchangeGoods extends wepy.page {
         height: 100%;
       }
     }
+  }
+
+  .btn_box {
+    padding: 0 40rpx;
   }
 </style>
