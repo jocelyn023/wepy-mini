@@ -2,7 +2,7 @@ import {
   wxRequest
 } from '@/utils/wxRequest';
 
-const apiMall = 'http://api-mall.dyq086.cn'
+const apiMall = 'http://debug.guomiaotang.cn'
 
 /**
  * 获取发现好商品接口
@@ -12,7 +12,7 @@ const apiMall = 'http://api-mall.dyq086.cn'
 const getDiscoverList = (params) => wxRequest(params, apiMall + '/emall/goods/list?cateidOne=1&cateidTwo=0&price=0&sales=2');
 
 //微信的jscode换取sessionKey
-const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/emall/api/wechat/jscode2session");
+const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/user?code="+params.code);
 const user2session = (params) => wxRequest(params, apiMall + "/emall/api/wechat/user2session?jsoncallback=?");
 
 //商品接口---begin

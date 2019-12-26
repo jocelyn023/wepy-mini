@@ -1,5 +1,5 @@
 {
-	"description": "A WePY project",
+	"description": "国妙堂",
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
@@ -8,7 +8,7 @@
 	},
 	"compileType": "miniprogram",
 	"appid": "wx0f8a745678d7df4a",
-	"projectname": "mini",
+	"projectname": "国妙堂",
 	"miniprogramRoot": "dist/",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
