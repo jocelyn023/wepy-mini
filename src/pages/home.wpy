@@ -4,7 +4,7 @@
       <swiper class="swiper" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" circular="true">
         <block wx:for="{{adList}}" wx:key="key">
           <swiper-item>
-            <image src="{{item.picUrl}}" class="slide-image" @tap="goToAdvert({{item.advertUrl}})" />
+            <image src="{{item.imgUrl}}" class="slide-image" />
           </swiper-item>
         </block>
       </swiper>
@@ -14,7 +14,7 @@
         </block>
       </view>
     </view>
-    <shopGridList :purchasetype.sync="purchasetype" :list.sync="adList"></shopGridList>
+    <shopGridList :purchasetype.sync="purchasetype" :list.sync="list"></shopGridList>
     <!--加载更多时动画-->
     <bottomLoadMore :show.sync="showLoading" message="正在加载"></bottomLoadMore>
 <!--    &lt;!&ndash;暂无数据显示&ndash;&gt;-->
@@ -28,9 +28,14 @@ import tip from '@/utils/tip'
 import BottomLoadMore from "../components/common/bottomLoadMore"
 import Placeholder from "../components/common/placeholder"
 import ShopGridList from '../components/shop_grid_list'
+import {
+  SYSTEM_INFO,
+  USER_SPECICAL_INFO,
+  USER_INFO
+} from '@/utils/constant';
 export default class Home extends wepy.page {
   config = {
-    navigationBarTitleText: '演示商城',
+    navigationBarTitleText: '国妙堂',
   }
   components = {
     bottomLoadMore: BottomLoadMore,
@@ -71,77 +76,49 @@ export default class Home extends wepy.page {
     //广告列表
     adList: [],
     tps: 0,
-    is_show_alert: true
+    is_show_alert: true,
+    token: '',
+    uid: ''
   }
 
-  async getGoodList(currentPage, size) {
+  async getHome() {
     let that = this;
-    //const json = await api.getGoodsList({
-    const json = await api.hostGoodsList({
+    let infoa = wepy.getStorageSync(USER_SPECICAL_INFO);
+    that.token = infoa.token
+    that.uid = infoa.uid
+    console.log('infoa:-----------', infoa)
+    console.log('infoa.token:-----------', that.token)
+
+    const json = await api.getHome({
       query: {
-        page: currentPage || 1,
-        size: size || 10,
-        cateCode: this.catCode,
-        sort: this.sort,
-        skuval: this.skuval
+        token: that.token,
+        uid: that.uid
       }
     });
-    if (json.data.code == 0) {
-      that.cate = json.data.category;
-      wx.setNavigationBarTitle({  title: that.cate.name})
-      that.list = [...that.list, ...json.data.list];
-      that.page_total = json.data.page_total;
-      if (json.data.page_total == 0) {
-        //暂无数据
-        that.is_empty = true;
-      }
-    } else {
-      tip.error(json.data.msg);
-    }
-    that.showLoading = false;
-    that.$apply();
-  }
-
-  async getDiscoverList(currentPage, size) {
-    let that = this;
-    const json = await api.getHomeDisvocerList({
-      query: {
-        page: currentPage || 1,
-        size: size || 10
-      }
-    });
-    if (json.data.code == 0) {
-      that.discoverList = [...that.discoverList, ...json.data.list];
-
-      if (json.data.page_total) { // 后台的数据不再返回page_total
-      that.page_total = json.data.page_total
-      };
-      if (json.data.page_total == 0) {
-        //暂无数据
-        that.is_empty = true;
-      }
+    if (json.code == 1) {
+      that.adList = [...that.adList, ...json.data.slides];
+      that.list = [...that.list, ...json.data.products];
+      // if (json.data.page_total) { // 后台的数据不再返回page_total
+      //   that.page_total = json.data.page_total
+      // };
+      // if (json.data.page_total == 0) {
+      //   //暂无数据
+      //   that.is_empty = true;
+      // }
       that.$apply();
     } else {
       tip.error(json.data.msg);
     }
-    that.showLoading = false;
-  }
-  async getAdList() {
-    const json = await api.getAdList({
-      query: {}
-    });
-    if (json.data.code == 0) {
-      this.adList = json.data.list;
-      console.log(this.adList)
-      this.$apply();
-    } else {}
   }
   onLoad() {
     let that = this;
     this.discoverList = [];
-    that.getDiscoverList();
-    this.getAdList();
-    this.getGoodList();
+    // that.getDiscoverList();
+    // this.getAdList();
+    // this.getGoodList();
+    // console.log(111)
+    this.getHome()
+    // console.log(111)
   }
   computed = {}
   methods = {

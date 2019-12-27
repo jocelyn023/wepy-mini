@@ -12,6 +12,7 @@ const wxRequest = async(params = {}, url) => {
     let data = params.query || {};
     data.sign = SIGN;
     data.time = TIMESTAMP;
+
     let res = await wepy.request({
         url: url,
         method: params.method || 'GET',

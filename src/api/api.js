@@ -4,15 +4,19 @@ import {
 
 const apiMall = 'http://debug.guomiaotang.cn'
 
+//微信的jscode换取sessionKey
+const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/api/user");
+//首页--banner+ 商品列表
+const getHome = (params) => wxRequest(params, apiMall + '/api/get_home');
+//商品详情
+const getGoodsDetail = (params) => wxRequest(params, apiMall + '/api/get_home');
 /**
  * 获取发现好商品接口
  * @param  {[type]} params [description]
  * @return {[type]}        [description]
  */
 const getDiscoverList = (params) => wxRequest(params, apiMall + '/emall/goods/list?cateidOne=1&cateidTwo=0&price=0&sales=2');
-
 //微信的jscode换取sessionKey
-const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/user?code="+params.code);
 const user2session = (params) => wxRequest(params, apiMall + "/emall/api/wechat/user2session?jsoncallback=?");
 
 //商品接口---begin
@@ -143,12 +147,14 @@ const childGoodsCatetoryList = (params) => wxRequest(params, apiMall + '/emall/a
 const getAdList = (params) => wxRequest(params, apiMall + '/emall/api/adverts/list');
 
 export default {
+  wxJsCode2Session,
+  getHome,
+  getGoodsDetail,
   hostGoodsList,
   getDiscoverList,
   getHomeDisvocerList,
   getGoodsList,
   goodsDetail,
-  wxJsCode2Session,
   user2session,
   userSginInfo,
   doSign,

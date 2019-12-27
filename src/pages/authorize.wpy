@@ -1,7 +1,7 @@
 <template>
   <view class="authorize-contianer">
     <image class="authorize-icon" src="../images/authorize.png"></image>
-    <view class="auth-item">商城申请获取以下权限：</view>
+    <view class="auth-item">小程序申请获取以下权限：</view>
     <view class="auth-item">获取你的公开信息（头像、昵称等）</view>
     <view class="btn-authorize">
       <button open-type="getUserInfo" type="primary" lang="zh_CN" bindgetuserinfo="onGotUserInfo">授权</button>
@@ -20,7 +20,7 @@ export default class Authorize extends wepy.page {
   config = {
     navigationBarTitleText: '授权登录',
   }
-  async onLoad() { 
+  async onLoad() {
     let res = await wepy.getSetting()
     if ((res.authSetting)['scope.userInfo']) {
       let userInfo = wepy.getStorageSync(USER_INFO)
@@ -35,13 +35,14 @@ export default class Authorize extends wepy.page {
           wepy.setStorageSync(SYSTEM_INFO, systemInfo);
           let rlt = await api.wxJsCode2Session({
             query: {
-              jsCode: res.code,
-              nickName: data.userInfo.nickName
+              code: res.code,
+              iv: data.iv,
+              encryptedData: data.encryptedData
             }
           })
-          if (rlt.data.result) {
+          if (rlt.data.code) {
             let data = rlt.data;
-            if (data.data.openid) {
+            if (data.data.uid) {
               wepy.setStorageSync(USER_SPECICAL_INFO, data.data);
             }
           }
@@ -59,32 +60,36 @@ export default class Authorize extends wepy.page {
         wepy.setStorageSync(USER_INFO, e.detail.userInfo);
         let systemInfo = wepy.getSystemInfoSync();
         wepy.setStorageSync(SYSTEM_INFO, systemInfo);
-        let rlt = await api.wxJsCode2Session({
-          query: {
-            jsCode: res.code,
-            nickName: e.detail.userInfo.nickName
-          }
-        })
-        if (rlt.data.result) {
-          let data = rlt.data;
-          if (data.data.openid) {
-            wepy.setStorageSync(USER_SPECICAL_INFO, data.data);
-            wepy.switchTab({
-              url: '/pages/home'
-            })
-          }
-        } else {
-          let res = await wepy.showModal({
-            title: 'appid有误',
-            content: '授权失败'
+        let resp  = await wepy.getUserInfo()
+        if (resp) {
+          let rlt = await api.wxJsCode2Session({
+            query: {
+              code: res.code,
+              iv: resp.iv,
+              encryptedData: resp.encryptedData
+            },
+            method: 'POST'
           })
-          if (res.confirm) {
-            wepy.switchTab({
-              url: '/pages/home'
+          if (rlt.data.code) {
+            let data = rlt.data;
+            if (data.data.uid) {
+              wepy.setStorageSync(USER_SPECICAL_INFO, data.data);
+              wepy.switchTab({
+                url: '/pages/home'
+              })
+            }
+          } else {
+            let res = await wepy.showModal({
+              title: '111',
+              content: '授权失败'
             })
+            if (res.confirm) {
+              wepy.switchTab({
+                url: '/pages/home'
+              })
+            }
           }
         }
-
       }
     }
   }
