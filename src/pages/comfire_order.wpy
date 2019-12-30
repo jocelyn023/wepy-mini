@@ -1,34 +1,34 @@
 <!--确认订单-->
 <template>
   <view class="comfire_order">
-    <view class="address" @tap="setAddress">
-      <view class="empty_address" wx:if="{{!is_exit_address}}">
-        <view class="title">设置收货地址</view>
-        <view class="arrow">&gt;</view>
-      </view>
-      <view class="address_info" wx:else>
-        <view class="title">
-          <view class="user_info">
-            <text class="name">{{address.receiverName}}</text>
-            <text class="phone">{{address.mobile}}</text>
-          </view>
-          <view class="active_address">
-            <text class="defult" wx:if="{{address.isdefault==1}}"> [默认]</text>
-            {{address.addressDetail}}
-          </view>
-        </view>
-        <view class="arrow">&gt;</view>
-      </view>
-    </view>
-    <view class="spacing"></view>
+<!--    <view class="address" @tap="setAddress">-->
+<!--      <view class="empty_address" wx:if="{{!is_exit_address}}">-->
+<!--        <view class="title">设置收货地址</view>-->
+<!--        <view class="arrow">&gt;</view>-->
+<!--      </view>-->
+<!--      <view class="address_info" wx:else>-->
+<!--        <view class="title">-->
+<!--          <view class="user_info">-->
+<!--            <text class="name">{{address.receiverName}}</text>-->
+<!--            <text class="phone">{{address.mobile}}</text>-->
+<!--          </view>-->
+<!--          <view class="active_address">-->
+<!--            <text class="defult" wx:if="{{address.isdefault==1}}"> [默认]</text>-->
+<!--            {{address.addressDetail}}-->
+<!--          </view>-->
+<!--        </view>-->
+<!--        <view class="arrow">&gt;</view>-->
+<!--      </view>-->
+<!--    </view>-->
+<!--    <view class="spacing"></view>-->
 
     <view class="orde-info">
       <view class="title">购物清单：</view>
       <view class="flex info">
-        <image class="thum" src="{{orderList.thum}}" alt=""></image>
+        <image class="thum" src="{{thumlogo}}" alt=""></image>
         <view class="goodsTitle">
-          <view class="fz28">VIP卡券</view>
-          <view class="theme fz24">￥1688</view>
+          <view class="fz28">{{title}}</view>
+          <view class="theme fz24">￥{{actualPrice}}</view>
         </view>
         <view class="count fz24">数量： 1</view>
       </view>
@@ -38,7 +38,7 @@
     <view class="order_info">
       <view class="block">
         <view class="left">商品金额</view>
-        <view class="right">1688.00元</view>
+        <view class="right">{{actualPrice}}元</view>
       </view>
       <view class="block">
         <view class="left tongji">快递费</view>
@@ -47,8 +47,8 @@
     </view>
 
     <view class="fix-tool flex fz24 cfff">
-      <view>合计： 1688.00元</view>
-      <view class="btn-pay bg-theme fz32">确认付款</view>
+      <view>合计： {{totalPrice}}元</view>
+      <view class="btn-pay bg-theme fz32" @tap="goToPay" >确认付款</view>
     </view>
   </view>
 </template>
@@ -71,162 +71,95 @@ export default class ComfireOrder extends wepy.page {
   }
 
   data = {
-    list: [],
+    thumlogo: '',
     goodsId: '',
-    //是否存在默认地址
-    is_exit_address: false,
-    address: {},
     //总价
     totalPrice:0,
-    actualPrice : 0,
-    purchaseType : 1,
-    //总积分
-    // total_jf_num: 0,
-    // can_use_score:0,
-    // deduScore:0,
-    // deduFee : 0,
-    // //输入抵扣积分
-    // jf_num: 0,
-    // reduce_fee : 0,
-    operating: false
+    //实付价格
+    actualPrice : 0
   }
 
   //获取订单详情
-  async getOrderDetailInfo() {
-    let that = this;
-    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    let openId = userSpecialInfo.openid;
-    const json = await api.preOrder({
-      query: {
-        openId: openId,
-        goodsId: that.goodsId
-      }
-    });
-    if (json.data.code == 0) {
-      let data = json.data;
-      this.list = data.goodsList;
-      this.totalPrice = data.totalPrice;
-      this.actualPrice = data.actualPrice;
-      this.is_exit_address = data.hasDefaultAddress;
-      this.address = data.defaultAddress;
-      this.total_jf_num = data.userScore;
-      this.can_use_score = data.canUseScore;
-      this.deduScore = data.deduScore;
-      this.deduFee = data.deduFee;
-      this.jf_num = data.canUseScore;
-      this.reduce_fee = data.reduceFee;
-    } else {
-      tip.error(json.data.msg)
-    }
-    that.$apply();
-  }
-
-  async getAddressInfo(id) {
-    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    const json = await api.receiverInfoById({
-      query: {
-        id: id
-      }
-    });
-    if (json.data.code == 0) {
-      this.is_exit_address = true;
-      this.address=json.data.receiverInfo;
-    } else {
-      tip.error(json.data.msg)
-    }
-  }
+  // async getOrderDetailInfo() {
+  //   let that = this;
+  //   let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
+  //   let openId = userSpecialInfo.openid;
+  //   const json = await api.preOrder({
+  //     query: {
+  //       openId: openId,
+  //       goodsId: that.goodsId
+  //     }
+  //   });
+  //   if (json.data.code == 0) {
+  //     let data = json.data;
+  //     this.list = data.goodsList;
+  //     this.totalPrice = data.totalPrice;
+  //     this.actualPrice = data.actualPrice;
+  //     this.is_exit_address = data.hasDefaultAddress;
+  //     this.address = data.defaultAddress;
+  //     this.total_jf_num = data.userScore;
+  //     this.can_use_score = data.canUseScore;
+  //     this.deduScore = data.deduScore;
+  //     this.deduFee = data.deduFee;
+  //     this.jf_num = data.canUseScore;
+  //     this.reduce_fee = data.reduceFee;
+  //   } else {
+  //     tip.error(json.data.msg)
+  //   }
+  //   that.$apply();
+  // }
 
   onLoad(option) {
     let that = this;
-    this.actualPrice = 0;
-    this.totalPrice = 0;
-    this.reduce_fee = 0;
-    this.operating = false;
     that.goodsId = option.goodsId==undefined?"":option.goodsId;
-    that.getOrderDetailInfo();
-    let from = option.from==undefined?"":option.from;
-    if (from=="selAdd") {
-      this.getAddressInfo(wepy.getStorageSync(ADDRESS_ID))
-    }
-  }
-  computed = {
-
+    that.actualPrice = option.price==undefined?"":option.price;
+    that.thumlogo = option.thumlogo==undefined?"":option.thumlogo;
+    that.totalPrice = that.actualPrice
   }
 
-  async goToPay(formId) {
+  async goToPay() {
     //测试调用接口用，可注释
     tip.loading("提交订单中");
-    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    let openId = userSpecialInfo.openid;
-    const json = await api.saveByCart({
+    let that = this;
+    let infoa = wepy.getStorageSync(USER_SPECICAL_INFO);
+    that.token = infoa.token
+    that.uid = infoa.uid
+    const json = await api.createOrder({
       query: {
-        openId: openId,
-        receiverInfoId: this.address.id,
-        businessMessage: this.sellerMessage,
-        formId: formId,
-        reduceScore: this.jf_num
-      }
+        pid: this.goodsId,
+        token: that.token,
+        uid: that.uid
+      },
+      method: 'POST'
     });
-
-    if (json.data.code == 0) {
-      //补货直接提交到后台去审核
-      if (this.purchaseType==2) {//补货
-        tip.success("已提交补货申请!");
-        setTimeout(() => {
-          tip.loaded();
-          wepy.navigateTo({
-            url: "/pages/reorder"
-          })
-        }, 2000)
-        return;
-      }
-      //保存成功了后进行微信支付
-      const pay = await api.toPay({
-        query:{
-          openId: openId,
-          orderNo: json.data.tradeNo
+    if (json.data.code == 1) {
+      //以下是微信支付
+      wx.requestPayment({
+        appId: json.data.data.appId,
+        timeStamp: json.data.data.timeStamp,
+        nonceStr: json.data.data.nonceStr,
+        package: json.data.data.package,
+        signType: 'MD5',
+        paySign: json.data.data.paySign,
+        success: function (res) {
+          console.log('requestPayment', res)
+          setTimeout(() => {
+            //支付成功 关闭loadding 跳转到支付成功页面
+            tip.loaded();
+            wepy.navigateTo({
+              url: "/pages/pay_success"
+            })
+          }, 2000)
+        },
+        fail: function (res) {
+          tip.alert('支付失败');
+          setTimeout(() => {
+            wepy.navigateTo({
+              url: "/pages/order"
+            })
+          }, 2000)
         }
-      });
-      if (pay.data.code==0) {
-        //以下是微信支付
-        wx.requestPayment({
-          appId: pay.data.appId,
-          timeStamp: pay.data.timeStamp,
-          nonceStr: pay.data.nonceStr,
-          package: pay.data.package,
-          signType: 'MD5',
-          paySign: pay.data.paySign,
-          success: function (res) {
-            console.log('pay', res)
-            setTimeout(() => {
-              //支付成功 关闭loadding 跳转到支付成功页面
-              tip.loaded();
-              wepy.navigateTo({
-                url: "/pages/pay_success?orderNo="+json.data.tradeNo
-              })
-            }, 2000)
-          },
-          fail: function (res) {
-            tip.alert('支付失败');
-            setTimeout(() => {
-              //支付成功 关闭loadding 跳转到支付成功页面
-              tip.loaded();
-              wepy.navigateTo({
-                url: "/pages/order"
-              })
-            }, 2000)
-          }
-        })
-      } else {
-        tip.alert('支付失败');
-        setTimeout(() => {
-          //支付成功 关闭loadding 跳转到支付成功页面
-          tip.loaded();
-          wepy.navigateTo({
-            url: "/pages/order"
-          })
-        }, 2000)
-      }
+      })
     } else {
       tip.error(json.data.msg)
     }
@@ -234,67 +167,7 @@ export default class ComfireOrder extends wepy.page {
   }
 
   methods = {
-    handleDelItem(itemData) {
-      this.deleteGoods(itemData);
-    },
-    bindKeyInput(e) {
-      this.sellerMessage = e.detail.value;
-      console.log("====" + e.detail.value);
-    },
-    async goPay(e) {
-      var fId = e.detail.formId;
-      if (!this.is_exit_address) {
-        await tip.confirm('你未设置收货地址，请设置地址');
-        wepy.navigateTo({
-          url: "/pages/address?type=order"
-        })
-        return false;
-      }
-      this.goToPay(fId);
-    },
-    setAddress() {
-      wepy.navigateTo({
-        url: "/pages/address?type=order"
-      })
-    },
-    jianBtnTap(e) {
-      if (this.operating) {
-        return;
-      }
-      this.operating = true;
-      var index = parseInt(e.currentTarget.dataset.index);
-      var id =  e.currentTarget.dataset.id;
-      var num = this.list[index].num;
-      // 如果只有1件了，就不允许再减了
-      if (num > 1) {
-        num --;
-      } else {
-        return;
-      }
-      // 购物车数据
-      //this.list[index].num = num;
-      //this.totalPrice = this.totalPrice-this.list[index].price;
-      //this.actualPrice = this.totalPrice - this.reduce_fee;
-      //this.$apply();
-      this.reduceGoodNum(id, num, index);
-    },
-    jiaBtnTap(e) {
-      if (this.operating) {
-        return;
-      }
-      this.operating = true;
-      var index = parseInt(e.currentTarget.dataset.index);
-      var num = this.list[index].num;
-      var id =  e.currentTarget.dataset.id;
-      // 自增
-      num ++;
-      // 购物车数据
-      /*this.list[index].num = num;
-      this.totalPrice = parseInt(this.totalPrice)+parseInt(this.list[index].price);
-      this.actualPrice = this.totalPrice - this.reduce_fee;
-      this.$apply();*/
-      this.addGoodNum(id, num, index);
-    }
+
   }
   events = {
 

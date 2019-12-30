@@ -2,14 +2,20 @@ import {
   wxRequest
 } from '@/utils/wxRequest';
 
-const apiMall = 'http://debug.guomiaotang.cn'
+const apiMall = 'http://debug.guomiaotang.cn/api'
 
 //微信的jscode换取sessionKey
-const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/api/user");
+const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/user");
 //首页--banner+ 商品列表
-const getHome = (params) => wxRequest(params, apiMall + '/api/get_home');
+const getHome = (params) => wxRequest(params, apiMall + '/get_home');
 //商品详情
-const getGoodsDetail = (params) => wxRequest(params, apiMall + '/api/get_home');
+const getGoodsDetail = (params) => wxRequest(params, apiMall + '/get_product_info');
+//支付前生成订单
+const createOrder = (params) => wxRequest(params, apiMall + '/pay');
+//支付统一下单
+// const toPay = (params) => wxRequest(params, apiMall + '/emall/wepay/toPay');
+
+
 /**
  * 获取发现好商品接口
  * @param  {[type]} params [description]
@@ -150,6 +156,7 @@ export default {
   wxJsCode2Session,
   getHome,
   getGoodsDetail,
+  createOrder,
   hostGoodsList,
   getDiscoverList,
   getHomeDisvocerList,

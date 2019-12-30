@@ -93,29 +93,21 @@ export default class extends wepy.app {
 
       // 请求成功后的回调函数
       success (p) {
-        console.log(p)
+        // console.log(p)
         // 可以在这里对收到的响应数据对象进行加工处理
         if(p.statusCode != 200){
-          let res = wepy.showModal({
-            title: '服务器请求失败',
-            content: '获取数据失败'
-          })
-          if (res.confirm) {
-            wepy.switchTab({
-              url: '/pages/authorize'
-            })
-          }
+          tip.error('服务器请求失败');
         } else {
           if(p.data.code==0) {
+            // token失效
             if(p.data.error_no==40010) {
-              //token失效
               let res = wepy.showModal({
                 title: 'token已失效',
                 content: '请重新登录！'
               })
               if (res.confirm) {
                 wepy.navigateTo({
-                  url: '/pages/authorize'
+                  url: '/pages/authorize?token=false'
                 })
               }
             } else {
@@ -137,7 +129,7 @@ export default class extends wepy.app {
 
       // 请求完成时的回调函数(请求成功或失败都会被执行)
       complete (p) {
-        console.log('request complete: ', p);
+        // console.log('request complete: ', p);
       }
     });
   }

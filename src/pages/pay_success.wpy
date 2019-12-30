@@ -3,7 +3,7 @@
   <view class="pay_success">
     <view class="icon">
       <view><i class="iconfont icon-success"></i></view>
-      <view class="success_doc">恭喜支付成功</view>
+      <view class="success_doc">恭喜您支付成功</view>
     </view>
     <view class="pay_type">
       <view class="block">
@@ -12,17 +12,10 @@
         <view class="type fz24">微信支付</view>
       </view>
     </view>
-    <view class="pay_money">
-      <view class="block">
-        <i class="iconfont icon-money"></i>
-        <view class="title fz24">支付金额</view>
-        <view class="type fz24">{{totalFee}}</view>
-      </view>
-    </view>
     <view class="pay_btn">
       <view class="block btn_group">
         <view class="btn order_detail" @tap="goOrderDetail">查看订单</view>
-        <view class="btn get_store" @tap="goIndex">继续购物</view>
+        <view class="btn get_store type_theme" @tap="goIndex">继续购物</view>
       </view>
     </view>
   </view>
@@ -46,25 +39,11 @@ export default class paySuccess extends wepy.page {
   components = {
 
   }
-  async getPayOrderDetail() {
-    let that = this;
-    const json = await api.getPayOrderDetail({
-      query: {
-        tradeNo: this.orderNo
-      }
-    });
-    if (json.data.code == 0) {
-      this.totalFee = json.data.order.totalFee;
-    } else {
-      tip.error(json.data.msg)
-    }
 
-    that.$apply();
-  }
   onLoad(option) {
     //tip.success('支付成功,接收的参数为' + option.orderNo);
-    this.orderNo = option.orderNo;
-    this.getPayOrderDetail();
+    // this.orderNo = option.orderNo;
+
   }
   computed = {
 
@@ -90,6 +69,9 @@ export default class paySuccess extends wepy.page {
 
 </script>
 <style lang="less">
+  page {
+    background: #fff
+  }
 .pay_success {
   background: #fff;
   padding-bottom: 50rpx;
@@ -150,8 +132,6 @@ export default class paySuccess extends wepy.page {
       border: 1px solid #ccc;
     }
     .get_store {
-      background: #ed601b;
-      color: #fff;
       margin-left: 85rpx;
     }
   }

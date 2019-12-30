@@ -20,11 +20,35 @@ export default class Authorize extends wepy.page {
   config = {
     navigationBarTitleText: '授权登录',
   }
-  async onLoad() {
+  async onLoad(options) {
     let res = await wepy.getSetting()
     if ((res.authSetting)['scope.userInfo']) {
       let userInfo = wepy.getStorageSync(USER_INFO)
       if (!userInfo.nickName) {
+        let data  = await wepy.getUserInfo()
+        if (data) {
+          wepy.setStorageSync(USER_INFO, data.userInfo)
+        }
+        let res = await wepy.login()
+        if (res.code) {
+          let systemInfo = wepy.getSystemInfoSync();
+          wepy.setStorageSync(SYSTEM_INFO, systemInfo);
+          let rlt = await api.wxJsCode2Session({
+            query: {
+              code: res.code,
+              iv: data.iv,
+              encryptedData: data.encryptedData
+            }
+          })
+          if (rlt.data.code) {
+            let data = rlt.data;
+            if (data.data.uid) {
+              wepy.setStorageSync(USER_SPECICAL_INFO, data.data);
+            }
+          }
+        }
+      } else if (options.token == 'false') {
+        //  token 失效
         let data  = await wepy.getUserInfo()
         if (data) {
           wepy.setStorageSync(USER_INFO, data.userInfo)

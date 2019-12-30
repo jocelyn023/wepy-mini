@@ -86,25 +86,18 @@ export default class Home extends wepy.page {
     let infoa = wepy.getStorageSync(USER_SPECICAL_INFO);
     that.token = infoa.token
     that.uid = infoa.uid
-    console.log('infoa:-----------', infoa)
-    console.log('infoa.token:-----------', that.token)
 
-    const json = await api.getHome({
+    var json = await api.getHome({
       query: {
         token: that.token,
         uid: that.uid
       }
     });
-    if (json.code == 1) {
-      that.adList = [...that.adList, ...json.data.slides];
-      that.list = [...that.list, ...json.data.products];
-      // if (json.data.page_total) { // 后台的数据不再返回page_total
-      //   that.page_total = json.data.page_total
-      // };
-      // if (json.data.page_total == 0) {
-      //   //暂无数据
-      //   that.is_empty = true;
-      // }
+    if (json.data.code == 1) {
+      const json2 = json.data;
+      that.adList = [...that.adList, ...json2.data.slides];
+      that.list = [...that.list, ...json2.data.products];
+
       that.$apply();
     } else {
       tip.error(json.data.msg);
@@ -113,31 +106,17 @@ export default class Home extends wepy.page {
   onLoad() {
     let that = this;
     this.discoverList = [];
-    // that.getDiscoverList();
-    // this.getAdList();
-    // this.getGoodList();
-    // console.log(111)
     this.getHome()
-    // console.log(111)
   }
   computed = {}
   methods = {
-    goToAdvert(url) {
-      console.log("url===" + url);
-      if (url.length == 0) {
-        return;
-      }
-      wepy.navigateTo({
-        url: url
-      })
-    },
     onShareAppMessage: function(res) {
       if (res.from === 'button') {
         // 来自页面内转发按钮
         console.log(res.target)
       }
       return {
-        title: '素洁服装厂',
+        title: '国妙堂',
         path: '/pages/home',
         success: function(res) {
           // 转发成功
@@ -159,7 +138,6 @@ export default class Home extends wepy.page {
   onReachBottom() {
     let that = this;
     that.showLoading = true;
-    console.log(that.page_total + "===" + that.currentPage);
     //判断总页数是否大于翻页数
     if ((that.page_total) > that.currentPage) {
       //防止重复加载

@@ -7,26 +7,26 @@
     <view class="item flex">
       <view class="label">卡号</view>
       <view class="nr">
-        <input class="weui-input" auto-focus placeholder=""/>
+        <input class="weui-input" auto-focus placeholder="" bindinput="cardNoInput" value="{{card_no}}"/>
       </view>
     </view>
     <view class="item flex">
       <view class="label">密码</view>
       <view class="nr">
-        <input class="weui-input" auto-focus placeholder=""/>
+        <input class="weui-input" auto-focus placeholder="" bindinput="pswdInput" value="{{pswd}}"/>
       </view>
     </view>
     <view class="item flex">
       <view class="label">验证码</view>
       <view class="nr">
-        <input class="weui-input" auto-focus placeholder=""/>
+        <input class="weui-input" auto-focus placeholder="" bindinput="regCodeInput" value="{{reg_code}}" />
       </view>
       <view class="reg"></view>
     </view>
   </view>
 
   <view class="btn_box">
-    <button class="button type_theme" formType="submit">立 即 提 货</button>
+    <button class="button type_theme" @tap="exchangeGoods" formType="submit">立 即 提 货</button>
   </view>
 </template>
 <script>
@@ -49,6 +49,9 @@ export default class exchangeGoods extends wepy.page {
     placeholder: Placeholder
   }
   data = {
+    card_no: '',
+    pswd: '',
+    reg_code: '',
     list: [],
     purchasetype: 1,
     special:1, ////0-正常入库;1-特价专区和换货专区
@@ -91,17 +94,38 @@ export default class exchangeGoods extends wepy.page {
 
   onLoad() {
     this.list = [];
-    console.log(1)
-    // this.getMyOrderGoodsList();
-    /*that.list = bb.result.products;
-    console.log(bb.result.products)*/
   }
+
+  async exchangeGoods() {
+    console.log(card_no, pswd, reg_code);
+    let res = await wepy.showModal({
+      title: '确认信息',
+      content: '您当前使用的默认地址是：北京市朝阳区安立路慧忠里B区107号楼三单元502'
+    })
+    if (res.confirm) {
+      let show = await wepy.showModal({
+        title: '提交成功',
+        content: '您当前使用的默认地址是：北京市朝阳区安立路慧忠里B区107号楼三单元502'
+      })
+    }
+  }
+
   computed = {
 
   }
   methods = {
-
-
+    cardNoInput (e) {
+      this.search_input_value = e.detail.value;
+      this.$apply();
+    },
+    pswdInput (e) {
+      this.search_input_value = e.detail.value;
+      this.$apply();
+    },
+    regCodeInput (e) {
+      this.search_input_value = e.detail.value;
+      this.$apply();
+    },
   }
   events = {
 
