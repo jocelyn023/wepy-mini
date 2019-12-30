@@ -4,54 +4,8 @@
 <repeat for="{{orderList}}">
   <view class="list" wx:key="index">
     <navigator class="item_content" url="/pages/order_detail?orderNo={{item.orderNo}}">
-      <view class="order_list_top">
-        <view class="left">
-          <view class="title">订单号：
-            <text class="order_doc">{{item.orderNo}}</text>
-          </view>
-          <view class="title mt10">提交时间：
-            <text class="order_doc">{{item.createTime}}</text>
-          </view>
-        </view>
-
-        <view class="order_state" wx:if="{{item.auditStatus==5}}">
-          审批中
-        </view>
-        <view class="order_state" wx:elif="{{item.auditStatus==-1}}"> 审批不通过 </view>
-        <view wx:else>
-          <text class="defult" wx:if="{{item.status==0}}">
-            <view class="order_state">待支付</view>
-          </text>
-          <view class="order_state" wx:if="{{item.status==1}}">已提货</view>
-          <view class="order_state" wx:if="{{item.status==2}}">未使用</view>
-        </view>
-    </view>
-
-    <view class="order_list_center">
-      <shopItemList :list.sync="item.orderItemList"></shopItemList>
-    </view>
-  </navigator>
-  <view class="order_list_footer">
-    <view class="reveiveMoney c333">应付款：
-      <text class="num">{{item.goodsPrices}}</text>
-    </view>
-
-    <view class="order_state" wx:if="{{item.auditStatus==5}}">
-    </view>
-    <view wx:elif="{{item.auditStatus==-1}}">
-      <view class="btn_group">
-        <view class="btn btn_del" @tap="delOrder" data-id="{{item.orderNo}}">删除订单</view>
-      </view>
-    </view>
-    <view wx:else>
-      <view class="btn_group">
-        <view class="btn btn_del" @tap="delOrder" data-id="{{item.orderNo}}" wx:if="{{item.status==0 || item.status==4}}">删除订单</view>
-        <view class="btn btn_pay" @tap="payMoney" data-id="{{item.orderNo}}" data-tradeno="{{item.payTradeNo}}" wx:if="{{item.status==0}}">立即付款</view>
-        <view class="btn btn_pay" @tap="completion" data-id="{{item.orderNo}}" wx:if="{{item.status==2 || item.status==1}}">确认收货</view>
-      </view>
-    </view>
-  </view>
-
+      1111111111111111
+    </navigator>
   </view>
 </repeat>
 </view>
@@ -66,34 +20,21 @@ import {
   USER_SPECICAL_INFO
 } from '@/utils/constant';
 export default class orderItem extends wepy.component {
-
   props = {
     orderList: {
+      type: Object,
       default: [{
         orderNo: '1111111111111',
-        createTime: '2019-08-20',
+        title: '国妙堂礼品卡',
+        card_no: '1111111',
+        pswd: '11111',
         status: 1,
-        auditStatus: 5
       },{
         orderNo: '1111111111111',
-        createTime: '2019-08-20',
+        title: '国妙堂礼品卡',
+        card_no: '1111111',
+        pswd: '11111',
         status: 1,
-        auditStatus: 5
-      }],
-      flag:"",
-      orderNo:"",
-      list:[{
-        orderNo: '1111111111111',
-        createTime: '2019-08-20',
-        status: 1,
-        auditStatus: 5,
-        goodsThumLogo: '../images/bg_order.png',
-        goodsName: '11111',
-        goodsSkuVals: '111',
-        price: 111,
-        num: 111,
-        refundStatus: 1,
-        id: '000'
       }]
     }
   }
@@ -192,9 +133,10 @@ export default class orderItem extends wepy.component {
 </script>
 <style lang="less">
 .order_item {
-  padding: 10rpx 0rpx;
+  padding: 10rpx 32rpx;
   background: #f7f7f7;
   margin-bottom: 30rpx;
+  box-sizing: border-box;
   .title {
     font-size: 26rpx;
     color: #333;
@@ -229,10 +171,15 @@ export default class orderItem extends wepy.component {
     border-bottom: 1px solid #efefef
   }
   .list {
-    background: url("../images/bg_order.png") no-repeat center;
+    background: url("http://q35xsfp8l.bkt.clouddn.com/bg_order.png") no-repeat center;
     background-size: 100%;
     padding: 30rpx;
     margin-top: 15rpx;
+    margin-bottom: 24rpx;
+    width: 100%;
+    height: 262rpx;
+    border-radius: 6rpx;
+    box-sizing: border-box;
   }
   .btn_group {
     display: flex;
