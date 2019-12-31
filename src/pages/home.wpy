@@ -9,8 +9,8 @@
         </block>
       </swiper>
       <view class="banner-tips flex">
-        <block wx:for="{{bannerTips}}" wx:key="key">
-          <view class="item">{{item.title}}</view>
+        <block wx:for="{{bannerTips}}" wx:key="key" wx:index="index">
+          <text class="ctheme {{index>1?'item-more':'item'}}">{{item.title}}</text>
         </block>
       </view>
     </view>
@@ -47,16 +47,16 @@ export default class Home extends wepy.page {
     interval: 3000,
     duration: 1000,
     bannerTips: [{
-      title: '哈哈哈哈1',
+      title: '药中黄金',
       subtitle: '哈哈哈哈'
     }, {
-      title: '哈哈哈哈1',
+      title: '传承千年',
       subtitle: '哈哈哈哈'
     }, {
-      title: '哈哈哈哈2',
+      title: '清热 \n 平肝名目',
       subtitle: '哈哈哈哈'
     }, {
-      title: '哈哈哈哈3',
+      title: '安全 \n 无副作用',
       subtitle: '哈哈哈哈'
     }],
     list: [],
@@ -189,6 +189,17 @@ export default class Home extends wepy.page {
         background: #ebd0a0;
         border-radius: 50%;
         line-height: 132rpx;
+      }
+
+      .item-more {
+        width: 132rpx;
+        height: 132rpx;
+        font-size: 14px;
+        background: #ebd0a0;
+        border-radius: 50%;
+        line-height: 40rpx;
+        padding-top: 26rpx;
+        box-sizing: border-box;
       }
     }
   }

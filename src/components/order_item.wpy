@@ -3,9 +3,20 @@
 <view class="order_item">
 <repeat for="{{orderList}}">
   <view class="list" wx:key="index">
-    <navigator class="item_content" url="/pages/order_detail?orderNo={{item.orderNo}}">
-      1111111111111111
-    </navigator>
+    <view class="flex detail">
+      <view class="title">{{item.title}}</view>
+      <view class="title">
+        <button class="type_theme" wx:if="{{item.status == 1}}" @tap="goAdress" data-cardNo="{{item.card_no}}" data-pswd="{{item.pswd}}">提货</button>
+<!--        <button class="type_white" wx:elif="{{item.status == 2}}">支付</button>-->
+        <button class="type_gray_b4" wx:else>已提货</button>
+      </view>
+    </view>
+
+    <!-- 价格 -->
+    <view class="price c-theme">￥{{item.price}}</view>
+
+    <view class="cardNo">卡号： {{item.card_no}}</view>
+    <view class="pswd">密码： {{item.pswd}}</view>
   </view>
 </repeat>
 </view>
@@ -13,10 +24,8 @@
 <script>
 import wepy from 'wepy'
 import tip from '@/utils/tip'
-import ShopItemList from '@/components/shop_item_list'
 import api from '@/api/api'
 import {
-  SYSTEM_INFO,
   USER_SPECICAL_INFO
 } from '@/utils/constant';
 export default class orderItem extends wepy.component {
@@ -29,104 +38,30 @@ export default class orderItem extends wepy.component {
         card_no: '1111111',
         pswd: '11111',
         status: 1,
+        price: '1688.00'
       },{
         orderNo: '1111111111111',
         title: '国妙堂礼品卡',
         card_no: '1111111',
         pswd: '11111',
-        status: 1,
+        status: 0,
+        price: '1688.00'
       }]
     }
   }
 
-  async editOrderInfo(orderNo,flag) {
-    console.log("调用方法");
-    let that = this;
-    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    const json = await api.editOrderInfo({
-      query: {
-        orderNo: orderNo,
-        flag:flag
-      }
-    });
-    if (json.data.code == 0) {
-
-      this.$emit('refreshOrderList', that.flag);
-    } else {
-      tip.error(json.data.errerTips)
-    }
-    that.$apply();
-  }
-  components = {
-    shopItemList: ShopItemList
-  }
-
-  events = {
-
-  }
-
   methods = {
-    async delOrder(e) {
-      this.flag=2;
-      this.orderNo = e.currentTarget.dataset.id;
-      await tip.confirm('是否删除订单');
-      console.log(this.flag);
-      this.editOrderInfo(this.orderNo,this.flag);
-      console.log("删除成功")
-
-    },
-      async completion(e) {
-      this.flag=3;
-      this.orderNo = e.currentTarget.dataset.id;
-      await tip.confirm('是否确认收货');
-      this.editOrderInfo(this.orderNo,this.flag);
-      console.log("完成")
+    goAdress (e) {
+      console.log(e)
+      // wepy.navigateTo({
+      //   url: '/pages/address?path=order'
+      // })
     },
 
-    async payMoney(e) {
-      this.orderNo = e.currentTarget.dataset.id;
-      let tradeNo = e.currentTarget.dataset.tradeno;
-      let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-      let openId = userSpecialInfo.openid;
-
-      const pay = await api.toPay({
-        query:{
-          openId: openId,
-          orderNo: tradeNo
-        }
-      });
-      if (pay.data.code==0) {
-        //以下是微信支付
-        wx.requestPayment({
-          appId: pay.data.appId,
-          timeStamp: pay.data.timeStamp,
-          nonceStr: pay.data.nonceStr,
-          package: pay.data.package,
-          signType: 'MD5',
-          paySign: pay.data.paySign,
-          success: function (res) {
-            console.log('pay', res)
-            setTimeout(() => {
-              //支付成功 关闭loadding 跳转到支付成功页面
-              tip.loaded();
-              wepy.navigateTo({
-                url: "/pages/pay_success?orderNo="+tradeNo
-              })
-            }, 2000)
-          },
-          fail: function (res) {
-            tip.alert('支付失败');
-          }
-        })
-      } else {
-        tip.alert('支付失败');
-      }
-    }
   }
 
   onLoad() {
-    console.log("===========lzz返回数据lzz=========")
-    console.log(this.orderList);
+
   }
 }
 
@@ -137,39 +72,6 @@ export default class orderItem extends wepy.component {
   background: #f7f7f7;
   margin-bottom: 30rpx;
   box-sizing: border-box;
-  .title {
-    font-size: 26rpx;
-    color: #333;
-  }
-  .order_doc {
-    font-size: 26rpx;
-    color: #808080;
-  }
-  .mt10 {
-    margin-top: 10rpx;
-  }
-  .order_state {
-    color: #ff4856;
-    font-size: 32rpx;
-  }
-  .order_list_top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-  .order_list_footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 20rpx;
-    .num {
-      color: #ff4856;
-    }
-  }
-  .order_list_top {
-    padding-bottom: 26rpx;
-    border-bottom: 1px solid #efefef
-  }
   .list {
     background: url("http://q35xsfp8l.bkt.clouddn.com/bg_order.png") no-repeat center;
     background-size: 100%;
@@ -180,33 +82,33 @@ export default class orderItem extends wepy.component {
     height: 262rpx;
     border-radius: 6rpx;
     box-sizing: border-box;
-  }
-  .btn_group {
-    display: flex;
-    align-items: center;
-    .btn {
-      font-size: 30rpx;
-      padding: 22rpx 35rpx;
-      text-align: center;
-      margin: 0 auto;
-      width: 100%;
-      -moz-border-radius: 15rpx;
-      /* Firefox */
-      -webkit-border-radius: 15rpx;
-      /* Safari 和 Chrome */
-      border-radius: 15rpx;
-      /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+    .price {
+      margin-bottom: 20rpx;
     }
-    .btn_del {
-      color: #333;
-      border: 1px solid #ccc;
-    }
-    .btn_pay {
-      background: #ff4856;
-      color: #fff;
-      margin-left: 20rpx;
+    .cardNo, .pswd {
+      font-size: 24rpx;
     }
   }
+  .detail {
+    margin-bottom: 40rpx;
+    width:100%;
+    height: 44rpx;
+    line-height: 44rpx;
+    font-size: 36rpx;
+    .title {
+      font-size: 36rpx;
+      color: #000;
+    }
+    button {
+      height: 100%;
+      line-height: 44rpx;
+      font-size: 14rpx;
+    }
+    button:after {
+      border: none
+    }
+  }
+
 }
 
 </style>

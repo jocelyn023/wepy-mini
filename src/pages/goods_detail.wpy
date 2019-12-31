@@ -33,7 +33,7 @@
     <view class="detail-bottom">
       <view class="bottom-box flex">
         <view class="counter-box flex"></view>
-        <view class="sy-bottom btn_order" @tap="doTakeOrder">{{purchaseText}}</view>
+        <view class="sy-bottom type_theme" @tap="doTakeOrder">{{purchaseText}}</view>
       </view>
     </view>
     <view class="over_model {{hidden?'hidden':''}}"></view>
@@ -100,20 +100,7 @@ export default class goodsDetail extends wepy.page {
     })
     this.animation = animation;
   }
-  wxParseImgLoad(e) {}
 
-  wxParseImgTap(e) {
-    var that = this
-    var nowImgUrl = e.target.dataset.src
-    var tagFrom = e.target.dataset.from
-    if (typeof(tagFrom) != 'undefined' && tagFrom.length > 0) {
-      wx.previewImage({
-        current: nowImgUrl, // 当前显示图片的http链接
-        // urls: that.data[tagFrom].imageUrls // 需要预览的图片http链接列表
-        urls: that.bindData[tagFrom].imageUrls // 注释掉上面的 换着一行 (http://blog.csdn.net/zhuming3834/article/details/74380079)
-      })
-    }
-  }
   async getGoodsDetail() {
     let that = this;
     let infoa = wepy.getStorageSync(USER_SPECICAL_INFO);
@@ -126,19 +113,9 @@ export default class goodsDetail extends wepy.page {
         uid: that.uid
       }
     });
-    let time = {};
     if (json.data.code == 1) {
       let data = json.data.data;
       that.detail = data;
-      WxParse.wxParse('detailInfo', 'html', that.detail.detailInfo, this);
-      time.endTime = that.detail.validEndTime;
-      time.startTime = that.detail.startTime;
-      if (json.data.validDate == "0") {
-        that.isValidDate = false;
-        if (this.purchasetype == 1 && this.special != 1) {
-          this.canOrder = false;
-        }
-      }
     } else {
       if (json.data.msg) {
         tip.error(json.data.msg)
@@ -156,106 +133,9 @@ export default class goodsDetail extends wepy.page {
     wepy.navigateTo({
       url: "/pages/comfire_order?goodsId=" + that.goodsId + "&price=" + that.detail.price + "&thumlogo=" + that.detail.thumb + "&title=" + that.detail.title
     })
-    // let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    // let openId = userSpecialInfo.openid;
   }
-  async showConfirmData() {
-    this.animation.height('783rpx').step();
-    this.setData({
-      animationData: this.animation.export()
-    })
-    setTimeout(() => {
-      this.hidden = false;
-      let systemInfo = wepy.getStorageSync(SYSTEM_INFO);
-      this.winHeight = systemInfo.windowHeight;
-      this.$apply();
-    }, 100)
-  }
+
   methods = {
-    // issus : https://mp.weixin.qq.com/debug/wxadoc/dev/api/ui-navigate.html#wxrelaunchobject
-    homePage() {
-      wepy.switchTab({
-        url: '/pages/home'
-      })
-      // wx.switchTab({
-      //   url: '/pages/home'
-      // })
-      // console.log(wepy)
-      // console.log(wx)
-    },
-    previewImage(e) {
-      let current = e.target.dataset.src;
-      let imageArry = [];
-      let obj = this.detail.photoList;
-      Object.keys(obj).forEach((item) => {
-        imageArry.push(obj[item].photo)
-      });
-      wx.previewImage({
-        current: current, // 当前显示图片的http链接
-        urls: imageArry, // 需要预览的图片http链接列表
-      })
-    },
-    bindOrderNumInput(e) {
-      this.orderNum = e.detail.value;
-    },
-    takeOrder() {
-      console.log(1111111111111)
-      if (!this.canOrder) {
-        return;
-      }
-      // this.showConfirmData();
-      this.orderType = 2;
-      this.doTakeOrder();
-    },
-    closeModel() {
-      this.winHeight = "100%";
-      this.animation.height(0).step();
-      this.setData({
-        animationData: this.animation.export()
-      })
-      setTimeout(() => {
-        this.hidden = true;
-        this.$apply();
-      }, 100)
-    },
-    jiaBtnTap(e) {
-      this.orderNum++;
-    },
-    jianBtnTap() {
-      if (this.orderNum > 1) {
-        this.orderNum--;
-      }
-    },
-    selAttr(e) {
-      var id = e.currentTarget.dataset.id;
-      var nameid = e.currentTarget.dataset.nameid;
-      var index = e.currentTarget.dataset.index;
-      for (var i = 0; i < this.detail.goodsSkuNameList.length; i++) {
-        var skuValList = this.detail.goodsSkuNameList[i].skuValList;
-        for (var j = 0; j < skuValList.length; j++) {
-          var skuVal = skuValList[j];
-          if (skuVal.skuNameId == nameid) {
-            skuVal.current = false;
-            if (skuVal.skuValId == id) {
-              skuVal.current = true;
-              this.detail.goodsSkuValIds[index] = id;
-              for (var k = 0; k < this.detail.goodsSkuList.length; k++) {
-                var skuValIds = JSON.parse(this.detail.goodsSkuList[k].skuValIds).toArray;
-                console.log("goodskuids..." + this.detail.goodsSkuList[k].skuValIds);
-                console.log("this goodskuids..." + this.detail.goodsSkuValIds);
-                if ("[" + this.detail.goodsSkuValIds.toString() + "]" === this.detail.goodsSkuList[k].skuValIds) {
-                  console.log("goodskuids equals...");
-                  this.detail.stockNum = this.detail.goodsSkuList[k].stockNum;
-                  this.detail.price = this.detail.goodsSkuList[k].price;
-                  this.$apply();
-                  break;
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     onShareAppMessage: function(res) {
       if (res.from === 'button') {
         // 来自页面内转发按钮
@@ -352,10 +232,11 @@ export default class goodsDetail extends wepy.page {
       position: relative;
     }
     .sy-bottom {
-      padding: 15rpx 40rpx;
-      height: 60rpx;
-      line-height: 60rpx;
+      width: 374rpx;
+      height: 100rpx;
+      line-height: 100rpx;
       font-size: 30rpx;
+      text-align: center;
     }
     .btn_order {
       background: #ff4856;

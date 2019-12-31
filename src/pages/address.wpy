@@ -36,37 +36,37 @@ export default class Address extends wepy.page {
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
     let openId = userSpecialInfo.openid;
-    const json = await api.getUserAddress({
-      query: {
-        openId: openId
-      }
-    });
-
-    if (json.data.code == 0) {
-      this.addressList=json.data.list;
-      console.log(this.addressList)
-      this.$invoke("addressList","refreshList", this.addressList);
-    } else {
-      tip.error(json.data.msg)
-    }
+    // const json = await api.getUserAddress({
+    //   query: {
+    //     openId: openId
+    //   }
+    // });
+    //
+    // if (json.data.code == 0) {
+    //   this.addressList=json.data.list;
+    //   console.log(this.addressList)
+    //   this.$invoke("addressList","refreshList", this.addressList);
+    // } else {
+    //   tip.error(json.data.msg)
+    // }
     that.showLoading = false;
   }
 
   async receiverInf(id) {
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    const json = await api.receiverInfoById({
-      query: {
-        id: id
-      }
-    });
-    if (json.data.code == 0) {
-      this.receiverInfo=json.data.receiverInfo;
-      this.$invoke("addressEdit","refresh", this.receiverInfo);
-      console.log("=================================")
-    } else {
-      tip.error(json.data.msg)
-    }
+    // const json = await api.receiverInfoById({
+    //   query: {
+    //     id: id
+    //   }
+    // });
+    // if (json.data.code == 0) {
+    //   this.receiverInfo=json.data.receiverInfo;
+    //   this.$invoke("addressEdit","refresh", this.receiverInfo);
+    //   console.log("=================================")
+    // } else {
+    //   tip.error(json.data.msg)
+    // }
     that.showLoading = false;
   }
 
@@ -79,9 +79,8 @@ export default class Address extends wepy.page {
   onLoad(option) {
     this.currentPage = 0;
     this.getUserAddress();
-    this.type = (option.type==undefined?"":option.type);
+    this.type = (option.type==undefined?"0":option.type);
     this.$invoke("addressList","setOrgType", this.type);
-    console.log(this.$invoke("addressList","setOrgType", this.type))
   }
 
   onShow(){
@@ -93,6 +92,7 @@ export default class Address extends wepy.page {
   }
   methods = {
     getCurrentPage(cur,id) {
+      console.log(cur,id)
       this.currentPage = cur;
       if (cur!=1&&cur!=0) {
         this.receiverInf(id);
@@ -116,6 +116,9 @@ export default class Address extends wepy.page {
 
 </script>
 <style lang="less">
+  page {
+    background: #fff;
+  }
 .hidden {
   display: none;
 }

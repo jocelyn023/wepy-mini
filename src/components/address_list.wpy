@@ -1,28 +1,31 @@
 <template>
+  <view class="top cfff flex type_theme" @tap="add">
+    <view class="add"><i class="gmtfont icon-pos"></i>添加收货地址</view>
+    <i class="gmtfont icon-right"></i>
+  </view>
   <view class="address">
     <repeat for="{{addressList}}" key="index" index="index" item="item">
       <view class="list_box">
-        <swipeDelete :swipeData="item" @delItem.user="handleDelItem">
-          <view class="address_list" @tap="tapSelAddress" data-id="{{item.id}}">
-            <view class="title">
-              <view class="user_info">
-                <text class="name">{{item.receiverName}}</text>
-                <text class="phone">{{item.mobile}}</text>
-              </view>
-              <view class="active_address">
-                <text class="defult" wx:if="{{item.isDef==1}}"> [默认]</text>
-                {{item.provinceName}} {{item.cityName}} {{item.areaName}} {{item.adressDetail}}
-              </view>
-            </view>
-            <view class="arrow"  @tap.stop="edit" data-id="{{item.id}}"><i class="iconfont icon-edit" ></i></view>
+        <view class="flex user_info">
+          <view class="name">王二哈</view>
+          <view class="phone">13800000000</view>
+        </view>
+        <view class="active_address">
+          北京市 朝阳区 安外大街一号荔枝大厦十三层安外大街一号荔枝大厦十三层安外大街一号荔枝大厦十三层
+        </view>
+        <view class="flex btns-wrap">
+          <view class="flex">
+            <button class="type_theme btn-use" wx:if="{{type==1}}">使用该地址</button>
           </view>
-        </swipeDelete>
+          <view class="button-wrap flex">
+            <button class="type_white edit" @tap.stop="edit" data-id="{{item.id}}">修改地址</button>
+            <button class="type_white del" @tap.stop="del" data-id="{{item.id}}">删除</button>
+          </view>
+        </view>
       </view>
     </repeat>
   </view>
-  <view class="add_wrap">
-    <view class="button type_red" @tap="add">新增地址</view>
-  </view>
+
 </template>
 <script>
 import wepy from 'wepy'
@@ -35,6 +38,11 @@ import {
 } from '@/utils/constant';
 export default class AddressList extends wepy.component {
   props = {
+    //type:0 普通地址页面， 1的时候是订单过来的页面
+    type: {
+      default: 1,
+      type: Number
+    },
     addressList: {
       default: [{
         style: 0
@@ -56,21 +64,21 @@ export default class AddressList extends wepy.component {
   async delUserAddress(id) {
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    const json = await api.delUserAddress({
-      query: {
-        id: id,
-        type:2
-      }
-    });
-
-    if (json.data.code == 0) {
-      console.log("删除成功");
-      this.$emit('currentPage', 0);
-      this.$emit('refreshAddList', 'hehe');
-    } else {
-      tip.error(json.data.msg)
-    }
-    that.showLoading = false;
+    // const json = await api.delUserAddress({
+    //   query: {
+    //     id: id,
+    //     type:2
+    //   }
+    // });
+    //
+    // if (json.data.code == 0) {
+    //   console.log("删除成功");
+    //   this.$emit('currentPage', 0);
+    //   this.$emit('refreshAddList', 'hehe');
+    // } else {
+    //   tip.error(json.data.msg)
+    // }
+    // that.showLoading = false;
   }
   methods = {
     add() {
@@ -82,14 +90,6 @@ export default class AddressList extends wepy.component {
       //0 列表 1新增 2编辑
       this.$emit('currentPage', 2,id);
     },
-    //左滑删除
-    handleDelItem(itemData) {
-      this.delUserAddress(itemData.id);
-      console.log("左滑删除")
-      console.log(itemData.id)
-
-    },
-
     refreshList(val){
       if (val==undefined) return;
       console.log("val.....",val);
@@ -98,7 +98,7 @@ export default class AddressList extends wepy.component {
     },
 
     setOrgType (type) {
-      this.type=type;
+      this.type = type;
     },
 
     tapSelAddress(e) {
@@ -121,11 +121,89 @@ export default class AddressList extends wepy.component {
 
 </script>
 <style lang="less">
-.list_box {
-  height: 150rpx;
-}
+  .top {
+    margin-bottom: 20rpx;
+    padding: 0 40rpx;
+    width: 100%;
+    height: 92rpx;
+    line-height: 92rpx;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+  .add {
+    height: 100%;
+    line-height: 92rpx;
+  }
 
+  .button-wrap {
+    width: 230rpx;
+    button {
+      padding: 0;
+      height: 88rpx;
+      line-height: 88rpx;
+      font-size: 24rpx;
+    }
+    button:after {
+      border: none
+    }
+    .edit {
+      width: 132rpx;
+      margin-right: 12rpx;
+    }
+    .del {
+      width: 84rpx;
+    }
+  }
 .address {
+  .btns-wrap {
+    width: 100%;
+    align-items: flex-end;
+    justify-content: space-between;
+    .btn-use {
+      width: 200rpx;
+      height: 96rpx;
+      font-size: 28rpx;
+      line-height: 96rpx;
+    }
+  }
+
+  .list_box {
+    margin: 0 auto 20rpx;
+    padding: 20rpx 44rpx;
+    width: 685rpx;
+    /*height: 262rpx;*/
+    box-sizing: border-box;
+    background-color: #fcfcfc;
+    background-image: linear-gradient(#fcfcfc 0%, #e0e0e0 100%);
+    border-radius: 12rpx;
+    .user_info {
+      width: 100%;
+      height: 72rpx;
+      align-items: baseline;
+      color: #101010;
+    }
+    .name {
+      width: 164rpx;
+      height: 100%;
+      line-height: 72rpx;
+      font-size: 36rpx;
+    }
+    .phone {
+      flex-grow: 1;
+      width: 164rpx;
+      height: 100%;
+      line-height: 54rpx;
+      font-size: 24rpx;
+    }
+
+    .active_address {
+      margin-bottom: 40rpx;
+      min-height: 50rpx;
+      line-height: 30rpx;
+      font-size: 24rpx;
+      color: #101010;
+    }
+  }
   .list_box:last-child {
     border-bottom: 1px solid #efefef;
   }

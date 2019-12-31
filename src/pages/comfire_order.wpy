@@ -1,34 +1,13 @@
 <!--确认订单-->
 <template>
   <view class="comfire_order">
-<!--    <view class="address" @tap="setAddress">-->
-<!--      <view class="empty_address" wx:if="{{!is_exit_address}}">-->
-<!--        <view class="title">设置收货地址</view>-->
-<!--        <view class="arrow">&gt;</view>-->
-<!--      </view>-->
-<!--      <view class="address_info" wx:else>-->
-<!--        <view class="title">-->
-<!--          <view class="user_info">-->
-<!--            <text class="name">{{address.receiverName}}</text>-->
-<!--            <text class="phone">{{address.mobile}}</text>-->
-<!--          </view>-->
-<!--          <view class="active_address">-->
-<!--            <text class="defult" wx:if="{{address.isdefault==1}}"> [默认]</text>-->
-<!--            {{address.addressDetail}}-->
-<!--          </view>-->
-<!--        </view>-->
-<!--        <view class="arrow">&gt;</view>-->
-<!--      </view>-->
-<!--    </view>-->
-<!--    <view class="spacing"></view>-->
-
     <view class="orde-info">
       <view class="title">购物清单：</view>
       <view class="flex info">
         <image class="thum" src="{{thumlogo}}" alt=""></image>
         <view class="goodsTitle">
-          <view class="fz28">{{title}}</view>
-          <view class="theme fz24">￥{{actualPrice}}</view>
+          <view class="fz28 goodsname">{{title}}</view>
+          <view class="ctheme fz24">￥{{actualPrice}}</view>
         </view>
         <view class="count fz24">数量： 1</view>
       </view>
@@ -73,47 +52,19 @@ export default class ComfireOrder extends wepy.page {
   data = {
     thumlogo: '',
     goodsId: '',
+    title: '',
     //总价
     totalPrice:0,
     //实付价格
     actualPrice : 0
   }
 
-  //获取订单详情
-  // async getOrderDetailInfo() {
-  //   let that = this;
-  //   let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-  //   let openId = userSpecialInfo.openid;
-  //   const json = await api.preOrder({
-  //     query: {
-  //       openId: openId,
-  //       goodsId: that.goodsId
-  //     }
-  //   });
-  //   if (json.data.code == 0) {
-  //     let data = json.data;
-  //     this.list = data.goodsList;
-  //     this.totalPrice = data.totalPrice;
-  //     this.actualPrice = data.actualPrice;
-  //     this.is_exit_address = data.hasDefaultAddress;
-  //     this.address = data.defaultAddress;
-  //     this.total_jf_num = data.userScore;
-  //     this.can_use_score = data.canUseScore;
-  //     this.deduScore = data.deduScore;
-  //     this.deduFee = data.deduFee;
-  //     this.jf_num = data.canUseScore;
-  //     this.reduce_fee = data.reduceFee;
-  //   } else {
-  //     tip.error(json.data.msg)
-  //   }
-  //   that.$apply();
-  // }
-
   onLoad(option) {
     let that = this;
     that.goodsId = option.goodsId==undefined?"":option.goodsId;
     that.actualPrice = option.price==undefined?"":option.price;
     that.thumlogo = option.thumlogo==undefined?"":option.thumlogo;
+    that.title = option.title==undefined?"":option.title;
     that.totalPrice = that.actualPrice
   }
 
@@ -146,18 +97,18 @@ export default class ComfireOrder extends wepy.page {
           setTimeout(() => {
             //支付成功 关闭loadding 跳转到支付成功页面
             tip.loaded();
-            wepy.navigateTo({
-              url: "/pages/pay_success"
+            wepy.redirectTo({
+              url: "/pages/order"
             })
-          }, 2000)
+          }, 1000)
         },
         fail: function (res) {
           tip.alert('支付失败');
           setTimeout(() => {
-            wepy.navigateTo({
-              url: "/pages/order"
+            wepy.switchTab({
+              url: "/pages/home"
             })
-          }, 2000)
+          }, 300)
         }
       })
     } else {
@@ -176,6 +127,12 @@ export default class ComfireOrder extends wepy.page {
 
 </script>
 <style lang="less">
+  .goodsname {
+    margin-bottom: 20rpx;
+    height: 40rpx;
+    line-height: 40rpx;
+    font-size: 28rpx;
+  }
 .address {
   border-top: 1px solid #efefef;
   background: #fff;

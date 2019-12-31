@@ -8,6 +8,11 @@
 import wepy from 'wepy';
 import 'wepy-async-function'
 import tip from './utils/tip'
+import {
+  SYSTEM_INFO,
+  USER_SPECICAL_INFO,
+  USER_INFO
+} from '@/utils/constant';
 export default class extends wepy.app {
   config = {
     pages: [
@@ -106,6 +111,7 @@ export default class extends wepy.app {
                 content: '请重新登录！'
               })
               if (res.confirm) {
+                wx.removeStorageSync(USER_INFO)
                 wepy.navigateTo({
                   url: '/pages/authorize?token=false'
                 })

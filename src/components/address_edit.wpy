@@ -53,12 +53,6 @@
           <input type="text" name="addressDetail" value="{{editInfo.addressDetail}}" />
         </view>
       </view>
-      <view class="list_item">
-        <view class="title">设置默认地址:</view>
-        <view class="input tr" @tap="changeCheckBoxState">
-          <icon type="success" size="20" color="{{isDefult? 'red':'#999'}}" />
-        </view>
-      </view>
     </view>
     <view class="btn_box">
       <button class="button type_red" formType="submit">修改</button>
@@ -76,8 +70,6 @@ import AreaPicker from "./common/wepy-area-picker"
 export default class AddressEdit extends wepy.component {
 
   data = {
-    isDefult: false,
-    isCheck: false,
     editInfo: {
       default: {},
       type: Object
@@ -95,13 +87,8 @@ export default class AddressEdit extends wepy.component {
     areaPicker: AreaPicker
   }
   async editAddress(address) {
-    console.log("保存");
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    let isDefult = 0;
-    if (this.isDefult) {
-      isDefult = 1;
-    }
     let openId = userSpecialInfo.openid;
     console.log("address:");
     console.log(this.id);
@@ -110,7 +97,6 @@ export default class AddressEdit extends wepy.component {
         openId: openId,
         id: this.id,
         address: address,
-        isDef: isDefult,
         province:that.provinceCode,
         city:that.cityCode,
         area:that.areaCode
@@ -127,12 +113,7 @@ export default class AddressEdit extends wepy.component {
     that.showLoading = false;
   }
   methods = {
-    changeCheckBoxState() {
-      this.isCheck = !this.isCheck;
-      this.isDefult = !this.isDefult;
-    },
     formSubmit(e) {
-
       let receiverName = e.detail.value.receiverName;
       let mobile = e.detail.value.mobile;
       let addressDetail = e.detail.value.addressDetail;
@@ -188,13 +169,10 @@ export default class AddressEdit extends wepy.component {
 
   onShow() {
     console.log("========editInfo==========");
-
     this.province = { code: '120000', name: '天津市' };
     this.city = { code: '120100', name: '天津市' };
     this.area = { code: '120101', name: '和平区' };
     this.$invoke('areaPicker', 'setAddressPickerValue', this.province, this.city, this.area);
-
-
   }
 }
 
