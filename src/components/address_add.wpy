@@ -75,13 +75,14 @@ import {
 import AreaPicker from "./common/wepy-area-picker"
 export default class AddressAdd extends wepy.component {
   data = {
-    isDefult: false,
     province: '',
     city: '',
     area: '',
     provinceCode: '',
     cityCode: '',
-    areaCode: ''
+    areaCode: '',
+    cityAllCode: '',
+    cityName: ''
   }
 
   components = {
@@ -91,22 +92,22 @@ export default class AddressAdd extends wepy.component {
   async addAddress(address) {
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    let isDefult = 0;
-    if (this.isDefult) {
-      isDefult = 1;
-    }
-    let openId = userSpecialInfo.openid;
+    let uid = userSpecialInfo.uid;
+    let token = userSpecialInfo.token;
+
     const json = await api.saveAddress({
       query: {
-        openId: openId,
-        address: address,
-        isDef: isDefult,
-        province:that.provinceCode,
-        city:that.cityCode,
-        area:that.areaCode
-      }
+        uid: uid,
+        token: token,
+        name: address.receiverName,
+        mobile: address.mobile,
+        code: that.cityAllCode,
+        city: that.cityName,
+        address: address.addressDetail
+      },
+      method: 'POST'
     });
-    if (json.data.code == 0) {
+    if (json.data.code == 1) {
       //0 列表 1新增 2编辑 (显示列表)
       this.$emit('currentPage', 0);
       this.$emit('refreshAddList', 'hehe');
@@ -146,13 +147,17 @@ export default class AddressAdd extends wepy.component {
     openAddressPicker() {
       this.$invoke('areaPicker', 'openAddressPicker');
     },
-    areaPickerArray(province, city, area) {
+    areaPickerArray(province, city, area,) {
       this.province = province;
       this.city = city;
       this.area = area;
+
       this.provinceCode = province.code;
       this.cityCode = city.code;
       this.areaCode = area.code;
+
+      this.cityName = '' + province.name + ' ' + city.name + ' ' + area.name + '';
+      this.cityAllCode = '' + this.provinceCode + '|' + this.cityCode + '|' + this.areaCode + '';
       this.$apply();
     }
   }

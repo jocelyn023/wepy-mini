@@ -1,7 +1,7 @@
 <!--地址管理-->
 <template>
   <view class="{{currentPage==0?'':'hidden'}}">
-    <addressList :list.sync="addressList" @currentPage.user="getCurrentPage"></addressList>
+    <addressList :list.sync="addressList" :orderId.sync="orderId" @currentPage.user="getCurrentPage"></addressList>
   </view>
   <view class="{{currentPage==1?'':'hidden'}}">
     <addressAdd @currentPage.user="getCurrentPage"></addressAdd>
@@ -25,6 +25,7 @@ export default class Address extends wepy.page {
     navigationBarTitleText: '地址管理',
   }
   data = {
+    orderId: '',
     addressList: [],
     receiverInfo:{},
     //显示当前组件 0 列表 1新增 2编辑
@@ -35,38 +36,62 @@ export default class Address extends wepy.page {
   async getUserAddress(phone,code) {
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    let openId = userSpecialInfo.openid;
-    // const json = await api.getUserAddress({
-    //   query: {
-    //     openId: openId
-    //   }
-    // });
-    //
-    // if (json.data.code == 0) {
-    //   this.addressList=json.data.list;
-    //   console.log(this.addressList)
-    //   this.$invoke("addressList","refreshList", this.addressList);
-    // } else {
-    //   tip.error(json.data.msg)
-    // }
+    let token = userSpecialInfo.token;
+    let uid = userSpecialInfo.uid;
+    const json = await api.getUserAddress({
+      query: {
+        token: token,
+        uid: uid
+      }
+    });
+
+    if (json.data.code == 1) {
+      this.addressList=json.data.data;
+      console.log(this.addressList)
+      this.$invoke("addressList","refreshList", this.addressList);
+    } else {
+      tip.error(json.data.msg)
+    }
     that.showLoading = false;
   }
 
   async receiverInf(id) {
     let that = this;
+    console.log('receiverInf')
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    // const json = await api.receiverInfoById({
-    //   query: {
-    //     id: id
-    //   }
-    // });
-    // if (json.data.code == 0) {
-    //   this.receiverInfo=json.data.receiverInfo;
-    //   this.$invoke("addressEdit","refresh", this.receiverInfo);
-    //   console.log("=================================")
-    // } else {
-    //   tip.error(json.data.msg)
-    // }
+    let token = userSpecialInfo.token;
+    let uid = userSpecialInfo.uid;
+    const json = await api.receiverInfoById({
+      query: {
+        id: id,
+        uid: uid,
+        token: token
+      }
+    });
+    if (json.data.code == 1) {
+      this.receiverInfo = json.data.data;
+      let cityName = this.receiverInfo.city.trim().split(" ");
+      let province = {
+        code: this.receiverInfo.code[0],
+        name: cityName[0]
+      }
+      let city = {
+        code: this.receiverInfo.code[1],
+        name: cityName[1]
+      }
+      let area = {
+        code: this.receiverInfo.code[2],
+        name: cityName[2]
+      }
+      this.receiverInfo.province = province
+      this.receiverInfo.city = city
+      this.receiverInfo.area = area
+      this.$invoke("addressEdit","refresh", this.receiverInfo);
+      console.log(this.receiverInfo)
+      console.log("=================================")
+    } else {
+      tip.error(json.data.msg)
+    }
     that.showLoading = false;
   }
 
@@ -80,6 +105,7 @@ export default class Address extends wepy.page {
     this.currentPage = 0;
     this.getUserAddress();
     this.type = (option.type==undefined?"0":option.type);
+    this.orderId = (option.id==undefined?"0":option.id);
     this.$invoke("addressList","setOrgType", this.type);
   }
 
@@ -100,11 +126,11 @@ export default class Address extends wepy.page {
     }
   }
   onUnload() {
-    // if (this.currentPage !== 0) {
-    //   wx.navigateTo({
-    //     url: "/pages/address"
-    //   })
-    // }
+    if (this.currentPage !== 0) {
+      wx.navigateTo({
+        url: "/pages/address"
+      })
+    }
   }
   events = {
       refreshAddList(msg){

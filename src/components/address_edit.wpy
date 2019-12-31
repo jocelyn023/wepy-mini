@@ -31,7 +31,7 @@
       <view class="list_item">
         <view class="title">收货人姓名:</view>
         <view class="input">
-          <input type="text" name="receiverName" value="{{editInfo.receiverName}}" />
+          <input type="text" name="receiverName" value="{{editInfo.name}}" />
         </view>
       </view>
       <view class="list_item">
@@ -43,14 +43,14 @@
       <view class="list_item">
         <view class="title">所在地区:</view>
         <view class="input">
-          <view @tap="openAddressPicker">{{province ? province.name : '省'}} - {{city ? city.name : '市' }} - {{area ? area.name : '区' }}</view>
+          <view @tap="openAddressPicker">{{province? province.name:'省'}}-{{city?city.name:'市'}}-{{area?area.name:'区'}}</view>
           <areaPicker @areaArray.user="areaPickerArray"></areaPicker>
         </view>
       </view>
       <view class="list_item">
         <view class="title">详细地址:</view>
         <view class="input">
-          <input type="text" name="addressDetail" value="{{editInfo.addressDetail}}" />
+          <input type="text" name="addressDetail" value="{{editInfo.address}}" />
         </view>
       </view>
     </view>
@@ -80,7 +80,10 @@ export default class AddressEdit extends wepy.component {
     area: '',
     provinceCode: '',
     cityCode: '',
-    areaCode: ''
+    areaCode: '',
+    cityName: '',
+    cityAllCode: '',
+    mobile: ''
   }
 
   components = {
@@ -89,20 +92,24 @@ export default class AddressEdit extends wepy.component {
   async editAddress(address) {
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    let openId = userSpecialInfo.openid;
+    let uid = userSpecialInfo.uid;
+    let token = userSpecialInfo.token;
     console.log("address:");
-    console.log(this.id);
-    const json = await api.saveAddress({
+    console.log(that);
+    const json = await api.editUserAddress({
       query: {
-        openId: openId,
         id: this.id,
-        address: address,
-        province:that.provinceCode,
-        city:that.cityCode,
-        area:that.areaCode
-      }
+        uid: uid,
+        token: token,
+        city: that.cityName,
+        code: that.cityAllCode,
+        name: address.receiverName,
+        mobile: that.mobile,
+        address: address.addressDetail
+      },
+      method: 'POST'
     });
-    if (json.data.code == 0) {
+    if (json.data.code == 1) {
       //0 列表 1新增 2编辑 (显示列表)
       this.$emit('currentPage', 0);
       this.$emit('refreshAddList', 'hehe');
@@ -141,15 +148,15 @@ export default class AddressEdit extends wepy.component {
       this.editInfo = val;
       console.log(this.editInfo);
       this.id = this.editInfo.id;
-      if(this.editInfo.isDef==1){
-        this.isDefult=true
-      }
+      this.mobile = this.editInfo.mobile;
       console.log("==========ee=========");
       console.log(this.isDefult);
-      this.province = { code: this.editInfo.provinceCode, name: this.editInfo.provinceName };
-      this.city = { code: this.editInfo.areaCode, name:this.editInfo.areaName };
-      this.area = { code: this.editInfo.cityCode, name: this.editInfo.cityName };
+      this.province = { code: this.editInfo.province.code, name: this.editInfo.province.name };
+      this.city = { code: this.editInfo.city.code, name:this.editInfo.city.name };
+      this.area = { code: this.editInfo.area.code, name: this.editInfo.area.name };
 
+      this.cityName = '' + this.province.name + ' ' + this.city.name + ' ' + this.area.name + '';
+      this.cityAllCode = '' + this.province.code + '|' + this.city.code + '|' + this.area.code + '';
       this.$apply();
     },
     openAddressPicker() {
@@ -163,6 +170,9 @@ export default class AddressEdit extends wepy.component {
       this.provinceCode = province.code;
       this.cityCode = city.code;
       this.areaCode = area.code;
+
+      this.cityName = '' + province.name + ' ' + city.name + ' ' + area.name + '';
+      this.cityAllCode = '' + this.provinceCode + '|' + this.cityCode + '|' + this.areaCode + '';
       this.$apply();
     }
   }
@@ -172,6 +182,7 @@ export default class AddressEdit extends wepy.component {
     this.province = { code: '120000', name: '天津市' };
     this.city = { code: '120100', name: '天津市' };
     this.area = { code: '120101', name: '和平区' };
+    console.log(this.editInfo )
     this.$invoke('areaPicker', 'setAddressPickerValue', this.province, this.city, this.area);
   }
 }

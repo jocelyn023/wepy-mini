@@ -4,28 +4,30 @@
     <i class="gmtfont icon-right"></i>
   </view>
   <view class="address">
-    <repeat for="{{addressList}}" key="index" index="index" item="item">
-      <view class="list_box">
-        <view class="flex user_info">
-          <view class="name">王二哈</view>
-          <view class="phone">13800000000</view>
-        </view>
-        <view class="active_address">
-          北京市 朝阳区 安外大街一号荔枝大厦十三层安外大街一号荔枝大厦十三层安外大街一号荔枝大厦十三层
-        </view>
-        <view class="flex btns-wrap">
-          <view class="flex">
-            <button class="type_theme btn-use" wx:if="{{type==1}}">使用该地址</button>
+    <block wx:if="{{addressList}}">
+      <repeat for="{{addressList}}" key="index" index="index" item="item">
+        <view class="list_box">
+          <view class="flex user_info">
+            <view class="name">{{item.name}}</view>
+            <view class="phone">{{item.mobile}}</view>
           </view>
-          <view class="button-wrap flex">
-            <button class="type_white edit" @tap.stop="edit" data-id="{{item.id}}">修改地址</button>
-            <button class="type_white del" @tap.stop="del" data-id="{{item.id}}">删除</button>
+          <view class="active_address">{{item.city}}{{item.address}}</view>
+          <view class="flex btns-wrap">
+            <view class="flex">
+              <button class="type_theme btn-use" wx:if="{{type==1}}" @tap="pickGoodsf" data-id="{{item.id}}">使用该地址</button>
+            </view>
+            <view class="button-wrap flex">
+              <button class="type_white edit" @tap.stop="edit" data-id="{{item.id}}">修改地址</button>
+              <button class="type_white del" @tap.stop="del" data-id="{{item.id}}">删除</button>
+            </view>
           </view>
         </view>
-      </view>
-    </repeat>
+      </repeat>
+    </block>
+    <block wx:else>
+      <view>您还没有添加收货地址，请点击上方添加按钮添加地址</view>
+    </block>
   </view>
-
 </template>
 <script>
 import wepy from 'wepy'
@@ -34,10 +36,15 @@ import tip from '@/utils/tip'
 import api from "@/api/api";
 import {
   USER_SPECICAL_INFO,
-  ADDRESS_ID
+  ADDRESS_ID,
+  USER_INFO
 } from '@/utils/constant';
 export default class AddressList extends wepy.component {
   props = {
+    orderId: {
+      default: '',
+      type: String
+    },
     //type:0 普通地址页面， 1的时候是订单过来的页面
     type: {
       default: 1,
@@ -64,21 +71,57 @@ export default class AddressList extends wepy.component {
   async delUserAddress(id) {
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    // const json = await api.delUserAddress({
-    //   query: {
-    //     id: id,
-    //     type:2
-    //   }
-    // });
-    //
-    // if (json.data.code == 0) {
-    //   console.log("删除成功");
-    //   this.$emit('currentPage', 0);
-    //   this.$emit('refreshAddList', 'hehe');
-    // } else {
-    //   tip.error(json.data.msg)
-    // }
-    // that.showLoading = false;
+    let token = userSpecialInfo.token;
+    let uid = userSpecialInfo.uid;
+    const json = await api.delUserAddress({
+      query: {
+        uid: uid,
+        token: token,
+        id: id
+      },
+      method: 'POST'
+    });
+
+    if (json.data.code == 1) {
+      console.log("删除成功");
+      this.$emit('currentPage', 0);
+      this.$emit('refreshAddList', 'hehe');
+    } else {
+      tip.error(json.data.msg)
+    }
+    that.showLoading = false;
+  }
+
+  //提货
+  async pickGoods(address_id) {
+    console.log("提货")
+    let that = this;
+    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
+    let token = userSpecialInfo.token;
+    let uid = userSpecialInfo.uid;
+    let id = that.orderId;
+    const json = await api.pickGoods({
+      query: {
+        uid: uid,
+        token: token,
+        id: id,
+        address_id: id
+      },
+      method: 'POST'
+    });
+
+    if (json.data.code == 1) {
+      let res = await wepy.showModal({
+        title: '提货成功',
+        content: '请耐心等待商品！'
+      })
+      if (res.confirm) {
+        wepy.navigateTo({
+          url: '/pages/order'
+        })
+      }
+      that.showLoading = false;
+    }
   }
   methods = {
     add() {
@@ -88,7 +131,12 @@ export default class AddressList extends wepy.component {
     edit(e) {
       var id = e.currentTarget.dataset.id;
       //0 列表 1新增 2编辑
-      this.$emit('currentPage', 2,id);
+      this.$emit('currentPage', 2, id);
+    },
+    del(e) {
+      var id = e.currentTarget.dataset.id;
+      //0 列表 1新增 2编辑
+      this.delUserAddress(id)
     },
     refreshList(val){
       if (val==undefined) return;
@@ -100,7 +148,10 @@ export default class AddressList extends wepy.component {
     setOrgType (type) {
       this.type = type;
     },
-
+    pickGoodsf (e) {
+      var id = e.currentTarget.dataset.id;
+      this.pickGoods(id)
+    },
     tapSelAddress(e) {
       if (this.type!="order") {
         return;

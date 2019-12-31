@@ -6,17 +6,36 @@ const apiMall = 'https://miniapp.guomiaotang.cn/api'
 
 //微信的jscode换取sessionKey
 const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/user");
+//-----------------------------用户信息--end
+
+
 //首页--banner+ 商品列表
 const getHome = (params) => wxRequest(params, apiMall + '/get_home');
 //商品详情
 const getGoodsDetail = (params) => wxRequest(params, apiMall + '/get_product_info');
+//------------------------------商品--end
+
+
 //支付前生成订单
 const createOrder = (params) => wxRequest(params, apiMall + '/pay');
-//支付统一下单
-
+//获取所有订单
 const getAllCards = (params) => wxRequest(params, apiMall + '/cards');
+//提货
+const pickGoods = (params) => wxRequest(params, apiMall + '/card/exchange_goods');
+//-------------------------------支付--end
 
+//用户收货地址
+const getUserAddress = (params) => wxRequest(params, apiMall + '/get_addresses');
+//保存用户收货地址
+const saveAddress = (params) => wxRequest(params, apiMall + '/address/create');
+//用户收货地址根据id查询
+const receiverInfoById = (params) => wxRequest(params, apiMall + '/address/detail');
+//修改用户收货地址
+const editUserAddress = (params) => wxRequest(params, apiMall + '/address/edit');
 
+//根据Id删除收货地址
+const delUserAddress = (params) => wxRequest(params, apiMall + '/address/del');
+// ---------------------地址------end
 /**
  * 获取发现好商品接口
  * @param  {[type]} params [description]
@@ -98,17 +117,6 @@ const sendRandCode = (params) => wxRequest(params, apiMall + '/emall/api/sms/sen
 //用户是否绑定手机号
 const getUserInfo = (params) => wxRequest(params, apiMall + '/emall/api/userCenter/getUserInfo');
 
-//用户收货地址
-const getUserAddress = (params) => wxRequest(params, apiMall + '/emall/api/receiverInfo/list');
-
-//保存用户收货地址
-const saveAddress = (params) => wxRequest(params, apiMall + '/emall/api/receiverInfo/saveOrUpdate');
-
-//用户收货地址根据id查询
-const receiverInfoById = (params) => wxRequest(params, apiMall + '/emall/api/receiverInfo/receiverInfoById');
-
-//根据Id删除收货地址
-const delUserAddress = (params) => wxRequest(params, apiMall + '/emall/api/receiverInfo/operation');
 
 //查询关键字保存
 const addSearchKeyword = (params) => wxRequest(params, apiMall + '/emall/api/searchkeyword/add');
@@ -154,9 +162,11 @@ const childGoodsCatetoryList = (params) => wxRequest(params, apiMall + '/emall/a
 const getAdList = (params) => wxRequest(params, apiMall + '/emall/api/adverts/list');
 
 export default {
+  editUserAddress,
   wxJsCode2Session,
   getHome,
   getGoodsDetail,
+  pickGoods,
   getAllCards,
   createOrder,
   hostGoodsList,
@@ -184,7 +194,6 @@ export default {
   registerUser,
   sendRandCode,
   getUserInfo,
-  getUserAddress,
   saveAddress,
   receiverInfoById,
   getUserAddress,

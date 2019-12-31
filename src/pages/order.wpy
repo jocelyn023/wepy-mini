@@ -33,6 +33,7 @@ export default class Order extends wepy.page {
   };
 
   data = {
+    isOnLoad: false,
     token: '',
     uid: '',
     winHeight: 0,
@@ -65,17 +66,15 @@ export default class Order extends wepy.page {
     console.log("orderStatus值");
     console.log("orderStatus值" + that.orderStatus);
     let infoa = wepy.getStorageSync(USER_SPECICAL_INFO);
-    that.token = infoa.token
-    that.uid = infoa.uid
+    let token = infoa.token
+    let uid = infoa.uid
     var json = await api.getAllCards({
       query: {
-        token: 'eBrhUmOlzNZM8BpHEKaJ9jDEBMkZWDRvXfjtoh2dULIvVq2ADFlY5udJbJ22',
-        uid: '3'
+        token: token,
+        uid: uid
       }
     });
     if (json.data.code == 1) {
-      console.log("json.data.list");
-      console.log(json.data.data);
       if (refresh) {
         that.orderList = json.data.data;
       } else {
@@ -103,43 +102,32 @@ export default class Order extends wepy.page {
     that.$apply();
   }
 
-  async getMyOrderSize() {
-    console.log("订单数量统计");
-    let that = this;
-    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    let openId = userSpecialInfo.openid;
-    const json = await api.getMyOrderSize({
-      query: {
-        openId: openId
-      }
-    });
-    if (json.data.code == 0) {
-      //待付款
-      that.pendingPayCount = json.data.pendingPayCount;
-      //待发货
-      that.backrdersCount = json.data.backrdersCount;
-      //待收货
-      that.shippedCount = json.data.shippedCount;
-
-      //重写list
-      var dotList = ["全部订单", { name: "待支付", dotNum: that.pendingPayCount }, { name: "待收货", dotNum: that.backrdersCount }, "已完成"];
-      that.$apply();
-    }
-  }
-
-
   onLoad(opts) {
     let that = this;
     let title = "";
     that.orderList = [];
     that.currentTab = opts.type;
-    that.getMyOrder();
+    console.log('load')
+    if(!that.isOnLoad) {
+      that.getMyOrder();
+    }
+
     //设置滚动高度
     let systemInfo = wepy.getStorageSync(SYSTEM_INFO);
     that.winHeight = systemInfo.windowHeight;
     that.$apply();
   }
   computed = {}
+
+  onShow(){
+    console.log('show')
+    let that = this;
+    this.isOnLoad = true
+    if(!that.isOnLoad) {
+      this.getUserAddress();
+    }
+  }
+
   //加载更多
   onReachBottom() {
     console.log("加载更多");

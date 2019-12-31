@@ -6,17 +6,16 @@
     <view class="flex detail">
       <view class="title">{{item.title}}</view>
       <view class="title">
-        <button class="type_theme" wx:if="{{item.status == 1}}" @tap="goAdress" data-cardNo="{{item.card_no}}" data-pswd="{{item.pswd}}">提货</button>
-<!--        <button class="type_white" wx:elif="{{item.status == 2}}">支付</button>-->
+        <button class="type_theme" wx:if="{{item.status == 0}}" @tap="goAdress" data-id="{{item.id}}">提货</button>
         <button class="type_gray_b4" wx:else>已提货</button>
       </view>
     </view>
 
     <!-- 价格 -->
-    <view class="price c-theme">￥{{item.price}}</view>
+    <view class="price ctheme">￥{{item.price}}</view>
 
-    <view class="cardNo">卡号： {{item.card_no}}</view>
-    <view class="pswd">密码： {{item.pswd}}</view>
+    <view class="cardNo">卡号： {{item.card_sn}}</view>
+    <view class="pswd">密码： {{item.secret}}</view>
   </view>
 </repeat>
 </view>
@@ -35,9 +34,9 @@ export default class orderItem extends wepy.component {
       default: [{
         orderNo: '1111111111111',
         title: '国妙堂礼品卡',
-        card_no: '1111111',
-        pswd: '11111',
-        status: 1,
+        card_sn: '1111111',
+        secret: '11111',
+        status: 1,//0未提 1已提货
         price: '1688.00'
       },{
         orderNo: '1111111111111',
@@ -52,10 +51,9 @@ export default class orderItem extends wepy.component {
 
   methods = {
     goAdress (e) {
-      console.log(e)
-      // wepy.navigateTo({
-      //   url: '/pages/address?path=order'
-      // })
+      wepy.navigateTo({
+        url: '/pages/address?type=1&id='+ e.target.dataset.id
+      })
     },
 
   }
@@ -76,8 +74,7 @@ export default class orderItem extends wepy.component {
     background: url("http://q35xsfp8l.bkt.clouddn.com/bg_order.png") no-repeat center;
     background-size: 100%;
     padding: 30rpx;
-    margin-top: 15rpx;
-    margin-bottom: 24rpx;
+    margin-bottom: 40rpx;
     width: 100%;
     height: 262rpx;
     border-radius: 6rpx;
@@ -100,9 +97,11 @@ export default class orderItem extends wepy.component {
       color: #000;
     }
     button {
-      height: 100%;
-      line-height: 44rpx;
-      font-size: 14rpx;
+      height: 64rpx;
+      line-height: 64rpx;
+      font-size: 24rpx;
+      width: 160rpx;
+
     }
     button:after {
       border: none
