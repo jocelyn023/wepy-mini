@@ -45,6 +45,10 @@ export default class AddressList extends wepy.component {
       default: '',
       type: String
     },
+    card_token: {
+      default: '',
+      type: String
+    },
     //type:0 普通地址页面， 1的时候是订单过来的页面
     type: {
       default: 1,
@@ -94,19 +98,24 @@ export default class AddressList extends wepy.component {
 
   //提货
   async pickGoods(address_id) {
-    console.log("提货")
     let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
     let token = userSpecialInfo.token;
     let uid = userSpecialInfo.uid;
     let id = that.orderId;
+    let card_token = that.card_token;
+    let query = {
+      uid: uid,
+      token: token,
+      id: id,
+      address_id: id
+    }
+    if(card_token) {
+      query.card_token = card_token
+    }
+    console.log(query)
     const json = await api.pickGoods({
-      query: {
-        uid: uid,
-        token: token,
-        id: id,
-        address_id: id
-      },
+      query: query,
       method: 'POST'
     });
 
@@ -222,10 +231,9 @@ export default class AddressList extends wepy.component {
     margin: 0 auto 20rpx;
     padding: 20rpx 44rpx;
     width: 685rpx;
-    /*height: 262rpx;*/
     box-sizing: border-box;
     background-color: #fcfcfc;
-    background-image: linear-gradient(#fcfcfc 0%, #e0e0e0 100%);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.25) 100%);
     border-radius: 12rpx;
     .user_info {
       width: 100%;

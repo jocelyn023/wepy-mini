@@ -111,7 +111,7 @@ export default class extends wepy.app {
                 content: '请重新登录！'
               })
               if (res.confirm) {
-                wx.removeStorageSync(USER_INFO)
+                // wx.removeStorageSync(USER_INFO)
                 wepy.navigateTo({
                   url: '/pages/authorize?token=false'
                 })

@@ -33,13 +33,13 @@
         </view>
         <view class="arrow">&gt;</view>
       </navigator>
-      <button class="item" open-type="contact">
+      <navigator class="item" url="/pages/points_rule">
         <view class="item_content">
           <image class="item_img" src="../images/icon_my_07.png"></image>
           <view class="text">客服</view>
         </view>
         <view class="arrow">&gt;</view>
-      </button>
+      </navigator>
     </view>
   </view>
 </template>

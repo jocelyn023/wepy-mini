@@ -20,6 +20,9 @@ const getGoodsDetail = (params) => wxRequest(params, apiMall + '/get_product_inf
 const createOrder = (params) => wxRequest(params, apiMall + '/pay');
 //获取所有订单
 const getAllCards = (params) => wxRequest(params, apiMall + '/cards');
+//获取验证码
+const getReg = (params) => wxRequest(params, apiMall + '/get_checkcode');
+const getCardId = (params) => wxRequest(params, apiMall + '/card/get_cardid');
 //提货
 const pickGoods = (params) => wxRequest(params, apiMall + '/card/exchange_goods');
 //-------------------------------支付--end
@@ -162,6 +165,8 @@ const childGoodsCatetoryList = (params) => wxRequest(params, apiMall + '/emall/a
 const getAdList = (params) => wxRequest(params, apiMall + '/emall/api/adverts/list');
 
 export default {
+  getCardId,
+  getReg,
   editUserAddress,
   wxJsCode2Session,
   getHome,

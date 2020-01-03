@@ -1,20 +1,15 @@
 <!--积分规则-->
 <template>
   <view class="jf_rule">
-    <view class="title tc">素洁服装厂积分规则</view>
-    <!--<view class="jf_jz_title tc">积分价值</view>-->
-    <view class="jf_content">
-      <view class="sec_title">1.签到积分规则 </view>
-      <view class="jf_ins">亲，每天签到送积分啦！每天签到一次送10积分，多签多得，积分可以抵消现金的，记得每天签到一次哦。</view>
+    <view class="logo">
+      <image src="http://q35xsfp8l.bkt.clouddn.com/200102logo.jpg"></image>
     </view>
-    <view class="jf_content">
-      <view class="sec_title">2.积分使用规则 </view>
-      <view class="jf_ins">亲，签到的积分可以享受满立减，下单更优惠！即满100积分可抵消5元现金；在您下单微信支付界面，系统会自动显示你的总积分多少可用多少，微信付款之后在商品金额上系统会自动减去5元。</view>
+    <view class="mininame">国妙堂</view>
+    <view class="version">v1.0.0</view>
+    <view class="concat-way">
+      <view class="item">官方微信：gmtxdf0001</view>
+      <view class="item">联系电话：13810674054</view>
     </view>
-    <!--<view class="jf_content">
-      <view class="sec_title">积分社区的价值</view>
-      <view class="jf_ins">小e们听过各种社区互动获得的积分可以用于提升小嗨的等级，等级越高开启的社区特权越多。</view>
-    </view>-->
   </view>
 </template>
 <script>
@@ -26,10 +21,7 @@ export default class PointsRule extends wepy.component {
   }
 
   events = {
-    // 'index-broadcast': (...args) => {
-    //   let $event = args[args.length - 1]
-    //   console.log(`${this.$name} receive ${$event.name} from ${$event.source.name}`)
-    // }
+
   }
 
   methods = {
@@ -41,32 +33,43 @@ export default class PointsRule extends wepy.component {
 
 </script>
 <style lang="less">
-.jf_rule {
-  border-top: 1px solid #efefef;
-  background: #fff;
-  padding: 33px 20rpx;
-  margin-top: 10rpx;
-  .title {
-    font-size: 36rpx;
-  }
-  .jf_jz_title {
-    color: #9999ff;
-    font-size: 30rpx;
-    padding-top: 56rpx;
-    display: block;
-  }
-  .jf_content {
-    text-align: left;
-    font-size: 30rpx;
-    .sec_title {
-      color: #666;
-      padding-top: 40rpx;
-    }
-    .jf_ins {
-      color: #999;
-      padding-top: 30rpx;
+
+  .logo {
+    margin: 40rpx auto 30rpx;
+    width: 200rpx;
+    height: 200rpx;
+    image {
+      width: 100%;
+      height: 100%;
+      border-radius: 8rpx;
     }
   }
-}
+  .mininame {
+    height: 40rpx;
+    line-height: 40rpx;
+    font-size: 14px;
+    text-align: center;
+  }
+  .version {
+    margin-bottom: 30rpx;
+    height: 40rpx;
+    line-height: 40rpx;
+    font-size: 12px;
+    text-align: center;
+  }
+  .concat-way {
+    padding: 0 20rpx;
+    width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    .item {
+      height: 100rpx;
+      line-height: 100rpx;
+    }
+    .item:first-child {
+      border-bottom: 1px solid #eee;
+    }
+  }
+
 
 </style>

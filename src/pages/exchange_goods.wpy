@@ -7,26 +7,28 @@
     <view class="item flex">
       <view class="label">卡号</view>
       <view class="nr">
-        <input class="weui-input" auto-focus placeholder="" bindinput="cardNoInput" value="{{card_no}}"/>
+        <input class="weui-input" name="card_no" auto-focus placeholder="" bindinput="cardNoInput" bindblur="cardNoInput" value="{{card_no}}"/>
       </view>
     </view>
     <view class="item flex">
       <view class="label">密码</view>
       <view class="nr">
-        <input class="weui-input" auto-focus placeholder="" bindinput="pswdInput" value="{{pswd}}"/>
+        <input class="weui-input" password name="pswd" placeholder="" bindinput="pswdInput" bindblur="pswdInput" value="{{pswd}}"/>
       </view>
     </view>
     <view class="item flex">
       <view class="label">验证码</view>
       <view class="nr">
-        <input class="weui-input" auto-focus placeholder="" bindinput="regCodeInput" value="{{reg_code}}" />
+        <input class="weui-input" name="reg_code" placeholder="" bindinput="regCodeInput" bindblur="regCodeInput" value="{{reg_code}}" />
       </view>
-      <view class="reg"></view>
+      <view class="reg">
+        <image src="{{getRegStr}}" @tap="getReg"></image>
+      </view>
     </view>
   </view>
 
   <view class="btn_box">
-    <button class="button type_theme" @tap="exchangeGoods" formType="submit">立 即 提 货</button>
+    <button class="button type_theme" @tap="formSubmit" formType="submit">立 即 提 货</button>
   </view>
 </template>
 <script>
@@ -52,80 +54,121 @@ export default class exchangeGoods extends wepy.page {
     card_no: '',
     pswd: '',
     reg_code: '',
-    list: [],
-    purchasetype: 1,
-    special:1, ////0-正常入库;1-特价专区和换货专区
-    //是否有数据
-    is_empty: false,
-    //当前页面
-    currentPage: 1,
-    //总页数
-    page_total: 0,
-    //是否显示 底部loading
-    showLoading: true,
-    //防止重复加载
-    preventRepeatReuqest: false
+    getRegStr: '',
+    random: ''
+  }
+  getUrlParames(variable) {
+    var query = this.getRegStr;
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+      var pair = vars[i].split("=");
+      if(pair[0] == variable){return pair[1];}
+    }
+    return(false);
   }
 
-  async getMyOrderGoodsList(currentPage,size) {
+  getRandom() {
+    const n = 4;//获取四位的随机数
+    if (n > 21) return null
+    var re =new RegExp("(\\d{" + n + "})(\\.|$)")
+    var num = (Array(n-1).join(0) + Math.pow(10,n) * Math.random()).match(re)[1];
+    if(num != this.random) {
+      this.random = num;
+    } else {
+      this.getRandom()
+    }
+  }
+
+  async submitReg(card_no, pswd, reg_code) {
+    let that = this;
     let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
-    let openId = userSpecialInfo.openid;
-    const json = await api.goodsUserOrderList({
+    let token = userSpecialInfo.token;
+    let uid = userSpecialInfo.uid;
+
+    const json = await api.getCardId({
       query: {
-        page: currentPage || 1,
-        size: size || 10,
-        openId: openId,
-        type: 'refund'
-      }
+        token: token,
+        uid: uid,
+        card_sn: that.card_no,
+        secret: that.pswd,
+        code: that.reg_code
+      },
+      method: 'POST'
     });
-    if (json.data.code == 0) {
-      this.list = [...this.list, ...json.data.list];
-      this.page_total = json.data.page_total;
-      if (json.data.page_total == 0) {
-        //暂无数据
-        this.is_empty = true;
+    if (json.data.code == 1) {
+      let res = await wepy.showModal({
+        title: '卡号验证成功',
+        content: '请选择收货地址'
+      })
+      if (res.confirm) {
+        wepy.navigateTo({
+          url: '/pages/address?type=1&&id='+ json.data.data.card_id + '&card_token='+ json.data.data.token
+        })
       }
     } else {
-      tip.error(json.data.msg);
+      tip.error(json.data.msg)
     }
-    this.showLoading = false;
-    this.$apply();
+    that.showLoading = false;
   }
 
   onLoad() {
-    this.list = [];
-  }
+    var that = this;
+    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
 
-  async exchangeGoods() {
-    console.log(card_no, pswd, reg_code);
-    let res = await wepy.showModal({
-      title: '确认信息',
-      content: '您当前使用的默认地址是：北京市朝阳区安立路慧忠里B区107号楼三单元502'
-    })
-    if (res.confirm) {
-      let show = await wepy.showModal({
-        title: '提交成功',
-        content: '您当前使用的默认地址是：北京市朝阳区安立路慧忠里B区107号楼三单元502'
-      })
+    if(userSpecialInfo) {
+      var uid = userSpecialInfo.uid
+      var token = userSpecialInfo.token
     }
+    that.getRegStr = 'https://miniapp.guomiaotang.cn/api/get_checkcode?uid=' + uid + '&token=' + token;
   }
 
   computed = {
-
   }
+
   methods = {
-    cardNoInput (e) {
-      this.search_input_value = e.detail.value;
-      this.$apply();
+    cardNoInput(e){
+      this.card_no = e.detail.value
     },
-    pswdInput (e) {
-      this.search_input_value = e.detail.value;
-      this.$apply();
+    pswdInput(e){
+      this.pswd = e.detail.value
     },
-    regCodeInput (e) {
-      this.search_input_value = e.detail.value;
-      this.$apply();
+    regCodeInput(e){
+      this.reg_code = e.detail.value
     },
+    getReg() {
+      this.getRandom()
+      let that = this;
+      let str = this.getRegStr;
+      let random = that.getUrlParames('random')
+
+      if(random) {
+        const i = str.indexOf('&')
+        let data = str.substring(i,str.length);
+        this.getRegStr = str.replace(data, '&random='+ this.random);
+      } else {
+        this.getRegStr = str + '&random=' + this.random;
+      }
+    },
+    formSubmit(e) {
+      console.log(e)
+      let card_no = this.card_no;
+      let pswd = this.pswd;
+      let reg_code = this.reg_code;
+
+      if (card_no.length!=20) {
+        tip.alert("请输入正确的卡号");
+        return false;
+      }
+      if (pswd.length != 10) {
+        tip.alert("请输入正确的密码");
+        return false;
+      }
+      if (reg_code.length != 6) {
+        tip.alert("验证码输入错误");
+        return false;
+      }
+      this.submitReg()
+    }
   }
   events = {
 
@@ -175,6 +218,10 @@ export default class exchangeGoods extends wepy.page {
         width: 200rpx;
         height: 100%;
         background: #e1e1e1;
+        image {
+          width: 100%;
+          height: 100%;
+        }
       }
 
       input {

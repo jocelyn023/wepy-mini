@@ -62,9 +62,6 @@ export default class Order extends wepy.page {
 
   async getMyOrder(currentPage, size,refresh) {
     let that = this;
-    console.log("refresh值："+refresh);
-    console.log("orderStatus值");
-    console.log("orderStatus值" + that.orderStatus);
     let infoa = wepy.getStorageSync(USER_SPECICAL_INFO);
     let token = infoa.token
     let uid = infoa.uid
@@ -85,18 +82,6 @@ export default class Order extends wepy.page {
       } else {
         that.is_empty = false;
       }
-      // that.page_total = json.data.page_total;
-      // that.totalCount = json.data.totalCount;
-      // console.log("条目数：" + that.totalCount);
-      // if (json.data.page_total == 0) {
-      //   //暂无数据
-      //   that.is_empty = true;
-      // } else {
-      //   that.is_empty = false;
-      // }
-      // that.getMyOrderSize();
-      console.log("list返回数据");
-      console.log(that.orderList);
     }
     that.showLoading = false;
     that.$apply();
@@ -107,7 +92,6 @@ export default class Order extends wepy.page {
     let title = "";
     that.orderList = [];
     that.currentTab = opts.type;
-    console.log('load')
     if(!that.isOnLoad) {
       that.getMyOrder();
     }
@@ -142,7 +126,6 @@ export default class Order extends wepy.page {
       }
       that.preventRepeatReuqest = true;
       that.currentPage++;
-      console.log(this.currentTab);
       if (this.currentTab == 0) {
         console.log("所有订单类型");
         that.getMyOrder(that.currentPage);

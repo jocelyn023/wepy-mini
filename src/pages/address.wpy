@@ -1,7 +1,7 @@
 <!--地址管理-->
 <template>
   <view class="{{currentPage==0?'':'hidden'}}">
-    <addressList :list.sync="addressList" :orderId.sync="orderId" @currentPage.user="getCurrentPage"></addressList>
+    <addressList :list.sync="addressList" :orderId.sync="orderId" :card_token.sync="card_token" @currentPage.user="getCurrentPage"></addressList>
   </view>
   <view class="{{currentPage==1?'':'hidden'}}">
     <addressAdd @currentPage.user="getCurrentPage"></addressAdd>
@@ -25,6 +25,7 @@ export default class Address extends wepy.page {
     navigationBarTitleText: '地址管理',
   }
   data = {
+    card_token: '',
     orderId: '',
     addressList: [],
     receiverInfo:{},
@@ -47,7 +48,6 @@ export default class Address extends wepy.page {
 
     if (json.data.code == 1) {
       this.addressList=json.data.data;
-      console.log(this.addressList)
       this.$invoke("addressList","refreshList", this.addressList);
     } else {
       tip.error(json.data.msg)
@@ -87,8 +87,6 @@ export default class Address extends wepy.page {
       this.receiverInfo.city = city
       this.receiverInfo.area = area
       this.$invoke("addressEdit","refresh", this.receiverInfo);
-      console.log(this.receiverInfo)
-      console.log("=================================")
     } else {
       tip.error(json.data.msg)
     }
@@ -105,7 +103,9 @@ export default class Address extends wepy.page {
     this.currentPage = 0;
     this.getUserAddress();
     this.type = (option.type==undefined?"0":option.type);
-    this.orderId = (option.id==undefined?"0":option.id);
+    this.orderId = (option.id==undefined?"":option.id);
+    this.card_token = (option.card_token==undefined?"":option.card_token);
+
     this.$invoke("addressList","setOrgType", this.type);
   }
 
