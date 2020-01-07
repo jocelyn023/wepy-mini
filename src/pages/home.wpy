@@ -10,7 +10,8 @@
       </swiper>
       <view class="banner-tips flex">
         <block wx:for="{{bannerTips}}" wx:key="key" wx:index="index">
-          <text class="ctheme {{index>1?'item-more':'item'}}">{{item.title}}</text>
+          <!-- <text class="ctheme {{index>1?'item-more':'item'}}">{{item.title}}</text> -->
+          <text class="ctheme item}}">{{item.title}}</text>
         </block>
       </view>
     </view>
@@ -43,21 +44,18 @@ export default class Home extends wepy.page {
     shopGridList: ShopGridList
   }
   data = {
+    isOnLoad: false,
     autoplay: true,
     interval: 3000,
     duration: 1000,
     bannerTips: [{
-      title: '药中黄金',
-      subtitle: '哈哈哈哈'
+      title: '药中黄金'
     }, {
-      title: '传承千年',
-      subtitle: '哈哈哈哈'
+      title: '传承千年'
     }, {
-      title: '清热 \n 平肝名目',
-      subtitle: '哈哈哈哈'
+      title: '清肝名目'
     }, {
-      title: '安全 \n 无副作用',
-      subtitle: '哈哈哈哈'
+      title: '临床医用'
     }],
     list: [],
     purchasetype: 1,
@@ -106,8 +104,19 @@ export default class Home extends wepy.page {
   onLoad() {
     let that = this;
     this.discoverList = [];
-    this.getHome()
+    if(!that.isOnLoad) {
+      that.getHome();
+    }
   }
+
+  onShow(){
+    let that = this;
+    this.isOnLoad = true
+    if(!that.isOnLoad) {
+      this.getHome();
+    }
+  }
+
   computed = {}
   methods = {
     onShareAppMessage: function(res) {
